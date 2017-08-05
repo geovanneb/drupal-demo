@@ -1,0 +1,9 @@
+{% set classes = ['navbar-nav', 'navbar-right'] %}
+<div{{ attributes.addClass(classes) }}>
+
+    	{{ title_suffix }}
+	      {% if content %}
+	        {{ content }}
+	      {% endif %}    
+
+</div>

@@ -1,0 +1,88 @@
+{% if shop_listing_sidebar != 'left' and shop_listing_sidebar != 'right' %}
+    {% set shop_classes = 'col-md-3 col-sm-4' %}
+{% else %}
+    {% set shop_classes = 'col-md-4 col-sm-6' %}
+{% endif %}
+{% if shop_listing_layout == 'grid' %}
+<div class="{{ shop_classes }} cate-box">                                  
+    <div class="thumbnail-wrap">
+        <div class="thumbnail">
+            <div class="thumbnail-img light-bg">
+                <div class="flipper">
+                    
+                    {% set image_product_url_1 = getUrlByImageStyle(node.uc_product_image.0.entity.uri.value, 'image_270x360') %}
+                        <div class="front">
+                        <a href="{{ url }}"> <img class="img-responsive" src="{{ image_product_url_1 }}" alt="{{ node.getTitle() }}"/> </a>
+                        </div>
+
+                    {% set image_product_url_2 = getUrlByImageStyle(node.uc_product_image.1.entity.uri.value, 'image_270x360') %}    
+                    <div class="back">                                                               
+                        <a href="{{ url }}"> <img class="img-responsive" src="{{ image_product_url_2 }}" alt="{{ node.getTitle() }}"/> </a>
+                    </div>                                                       
+                </div>
+                <ul class="thumbnail-conten list-items black-bg">
+                    <li class="epros-cart-grid">{{ content.add_to_cart }}</li>
+                    <li class="epros-view-grid"> <a href="{{ url }}"> <i class="icon ion-ios-eye-outline size-24"></i></a> </li>
+                </ul>                                                    
+            </div>
+            <div class="caption">
+                <div class="caption-title space-15"><a href="{{ url }}" class="title-2">{{ node.getTitle() }}</a></div>
+                <div class="caption-text font-3 epros-price-grid"> <span class="size-18 black-color">{{ content.price }}</span> </div>                                                   
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="cat-list-view">
+    <div class="row">                                                                         
+        <div class="thumbnail-wrap">
+            <div class="thumbnail">
+                <div class="{{ shop_classes }}">    
+                    <div class="thumbnail-img light-bg">
+                        <div class="flipper">
+                            {% set image_product_url_1 = getUrlByImageStyle(node.uc_product_image.0.entity.uri.value, 'image_270x360') %}
+                                <div class="front">
+                                <a href="{{ url }}"> <img class="img-responsive" src="{{ image_product_url_1 }}" alt="{{ node.getTitle() }}"/> </a>
+                                </div>
+
+                            {% set image_product_url_2 = getUrlByImageStyle(node.uc_product_image.1.entity.uri.value, 'image_270x360') %}    
+                            <div class="back">                                                               
+                                <a href="{{ url }}"> <img class="img-responsive" src="{{ image_product_url_2 }}" alt="{{ node.getTitle() }}"/> </a>
+                            </div>                                                       
+                        </div>
+                        <ul class="thumbnail-conten list-items black-bg font-2">    
+                            <li class="epros-view-list"> <a href="{{ url }}"> <i class="icon ion-ios-eye-outline size-24"></i> View </a> </li>
+                        </ul>                                                    
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-6">   
+                    <div class="product-content">                                                          
+                        <div class="product-heading">
+                            <a href="{{ url }}" class="title-2">{{ node.getTitle() }}</a>                                              
+                        </div>                                           
+
+                        <div class="product-price font-3">
+                            <p class="caption-text">
+                                <span class="size-18 black-color">{{ content.price }}</span>
+                                <del class="gray-color">  </del>
+                            </p>
+                        </div>
+
+
+                        <div class="product-description space-bottom-15 size-13">
+                            {{ node.field_short_description.value|length > 300 ? node.field_short_description.value|slice(0,300) ~ '...' : node.field_short_description.value }}
+                        </div>
+
+                        <div class="prod-btns space-top-20">                                                               
+                            <div class="add-to-cart epros-cart-list">
+                                {{ content.add_to_cart }}                                       
+                            </div>                                    
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
+{% endif %}

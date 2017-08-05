@@ -1,0 +1,55 @@
+<section class="header-wrap">
+    <div class="top-bar">
+        <div class="logo navbar-brand hidden-xs">
+            {% if header_logo_style == 'font_logo' %} 
+                <h2 class="logo-title  font-2"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+            {% else %}
+                <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+            {% endif %}
+            {% if header_slogan %}
+                {{ header_slogan|t }}
+            {% endif %}
+        </div>
+        <div class="navigation font-2">
+            {{ page.main_menu }}
+        </div>  
+
+        {{ page.section_main_menu }}
+
+    </div>
+</section>
+<header class="main-header epros-front-header">  
+    <section class="header-topbar">
+        <div class="col-md-12"> 
+            <div class="resp-row">  
+                <div class="col-md-3 col-sm-3">
+                    <div class="resp-logo visible-xs">
+                        {% if header_logo_style == 'font_logo' %} 
+                            <h2 class="logo-title  font-2"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+                        {% else %}
+                            <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+                        {% endif %}
+                        {% if header_slogan %}
+                            {{ header_slogan|t }}
+                        {% endif %}
+                    </div>                                
+                    <span class="nav-trigger toggle-hover">
+                        <a class="toggle-icon icon-cube size-24" href="#"> </a>
+                    </span>
+                </div>
+                <div class="col-md-9 col-sm-9 top-right pull-right text-right">
+                    <ul class="log-sign font-2">
+                        {{ page.top_menu }}
+                    </ul>
+                    <ul class="top-elements"> 
+                        {{ page.header_cart }}
+                        <li class="search-hover"> 
+                            <a href="#search-popup" class="search-icon icon-cube size-24">  </a> 
+                            {{ page.search }}
+                        </li>
+                    </ul>
+                </div>
+            </div>    
+        </div>
+    </section>             
+</header>

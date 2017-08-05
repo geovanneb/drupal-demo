@@ -38,7 +38,7 @@ class QuestionHelper extends Helper
      * @param OutputInterface $output   An OutputInterface instance
      * @param Question        $question The question to ask
      *
-     * @return mixed The user answer
+     * @return string The user answer
      *
      * @throws RuntimeException If there is no data to read in the input stream
      */
@@ -111,7 +111,8 @@ class QuestionHelper extends Helper
      *
      * @return bool|mixed|null|string
      *
-     * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
+     * @throws \Exception
+     * @throws \RuntimeException
      */
     public function doAsk(OutputInterface $output, Question $question)
     {
@@ -125,7 +126,7 @@ class QuestionHelper extends Helper
             if ($question->isHidden()) {
                 try {
                     $ret = trim($this->getHiddenResponse($output, $inputStream));
-                } catch (RuntimeException $e) {
+                } catch (\RuntimeException $e) {
                     if (!$question->isHiddenFallback()) {
                         throw $e;
                     }
@@ -135,7 +136,7 @@ class QuestionHelper extends Helper
             if (false === $ret) {
                 $ret = fgets($inputStream, 4096);
                 if (false === $ret) {
-                    throw new RuntimeException('Aborted');
+                    throw new \RuntimeException('Aborted');
                 }
                 $ret = trim($ret);
             }
@@ -201,7 +202,6 @@ class QuestionHelper extends Helper
      *
      * @param OutputInterface $output
      * @param Question        $question
-     * @param resource        $inputStream
      *
      * @return string
      */
@@ -318,8 +318,7 @@ class QuestionHelper extends Helper
     /**
      * Gets a hidden response from user.
      *
-     * @param OutputInterface $output      An Output instance
-     * @param resource        $inputStream The handler resource
+     * @param OutputInterface $output An Output instance
      *
      * @return string The answer
      *
@@ -383,7 +382,7 @@ class QuestionHelper extends Helper
      * @param OutputInterface $output      An Output instance
      * @param Question        $question    A Question instance
      *
-     * @return mixed The validated response
+     * @return string The validated response
      *
      * @throws \Exception In case the max number of attempts has been reached and no valid response has been given
      */
@@ -398,8 +397,6 @@ class QuestionHelper extends Helper
 
             try {
                 return call_user_func($question->getValidator(), $interviewer());
-            } catch (RuntimeException $e) {
-                throw $e;
             } catch (\Exception $error) {
             }
         }

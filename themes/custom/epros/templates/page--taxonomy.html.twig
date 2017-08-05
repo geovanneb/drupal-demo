@@ -1,0 +1,220 @@
+{% if setting_header == 'style2' %}
+    {% set header_classes = 'header-style-2' %}
+{% elseif setting_header == 'style3' %}
+    {% set header_classes = 'header-style-3' %}
+{% elseif setting_header == 'style4' %}
+    {% set header_classes = 'header-style-4' %}
+{% elseif setting_header == 'style5' %}
+    {% set header_classes = 'header-style-5' %}
+{% elseif setting_header == 'style6' %}
+    {% set header_classes = 'header-style-6' %}
+{% elseif setting_header == 'style7' %}
+    {% set header_classes = 'header-style-7' %}
+{% elseif setting_header == 'style8' %}
+    {% set header_classes = 'header-style-8' %}
+{% else %}
+    {% set header_classes = '' %}
+{% endif %}
+<main class="wrapper epros-front-header epros-menu-accout {{ header_classes }}"> 
+    <!-- Header -->
+    {% include theme_path ~ "/templates/header/header-1.html.twig" %}
+    <!-- /Header -->
+
+    <!-- CONTENT AREA -->
+
+    <!--Breadcrumb Section Start-->
+    {% set term_machine_name = current_term.vid.value.0.target_id %}
+    {% if term_machine_name == 'blog_categories' %}
+    {% set bg_img_url = file_url(current_term.field_header_background.entity.uri.value) %}
+        <section class="breadcrumb-bg blog-breadcrumb light-bg" style="background-image: url({{ bg_img_url }});">                
+            <div class="theme-container container ">
+                <div class="space-top-30"></div>
+                <div class="site-breadcumb col-md-5 space-80">                        
+                    <h1 class="section-title size-48 no-margin space-bottom-20">{{ title }}</h1> 
+                    <ol class="breadcrumb breadcrumb-menubar">
+                        {{ page.breadcrumbs }}                             
+                    </ol>
+                </div>  
+            </div>
+        </section>
+        <!--Breadcrumb Section End-->
+        {% if term_layout == 'standard' %}
+        <section class="wrapper space-100">
+            <div class="theme-container container">
+                <div class="row">
+                    <!-- Blog Post Starts -->
+                    {% if term_sidebar == 'left' %}
+                        <aside class="sidebar pd-rt col-sm-4 col-md-4">
+                           {{ page.sidebar }}
+                        </aside>
+                    {% endif %}
+                    <aside class="col-md-8 col-sm-8 blog-wrap post-listing">
+                        {{ page.content_full_bar }}
+                        {{ page.content }}
+                    </aside>
+                    <!-- / Blog Post Ends -->
+
+                    <!-- Product Categories Sidebar Starts -->                     
+                    {% if term_sidebar == 'right' %}
+                        <aside class="sidebar pd-lf col-sm-4 col-md-4">
+                           {{ page.sidebar }}
+                        </aside>
+                    {% endif %}
+                    <!-- Product Categories Sidebar Starts -->
+                </div>
+            </div>
+
+        </section>
+        {% else %}
+        <section class="wrapper space-100">
+            <div class="theme-container container">
+                <div class="row">
+                    <!-- Blog Post Starts -->
+                    {% if term_sidebar == 'left' %}
+                        <aside class="sidebar pd-rt col-sm-4 col-md-4">
+                           {{ page.sidebar }}
+                        </aside>
+                    {% endif %}
+                    <aside class="col-md-8 col-sm-8 blog-wrap post-listing">
+                        {{ page.content_full_bar }}
+                        {{ page.content }}
+                    </aside>
+                    <!-- / Blog Post Ends -->
+
+                    <!-- Product Categories Sidebar Starts -->                     
+                    {% if term_sidebar == 'right' %}
+                        <aside class="sidebar pd-lf col-sm-4 col-md-4">
+                           {{ page.sidebar }}
+                        </aside>
+                    {% endif %}
+                    <!-- Product Categories Sidebar Starts -->
+                </div>
+            </div>
+
+        </section>
+        {% endif %}
+    <!-- / CONTENT AREA -->
+
+    <!-- FOOTER -->
+    {% elseif term_machine_name == 'tags' %}
+        <section class="breadcrumb-bg blog-breadcrumb light-bg" style="background-image: url({{ blog_tags_page_header_bg }});">                
+            <div class="theme-container container ">
+                <div class="space-top-30"></div>
+                <div class="site-breadcumb col-md-5 space-80">                        
+                    <h1 class="section-title size-48 no-margin space-bottom-20">{{ title }}</h1> 
+                    <ol class="breadcrumb breadcrumb-menubar">
+                        {{ page.breadcrumbs }}                             
+                    </ol>
+                </div>  
+            </div>
+        </section>
+        <section class="wrapper space-100">
+            <div class="theme-container container">
+                <div class="row">
+                    <!-- Blog Post Starts -->
+                    <aside class="col-md-8 col-sm-8 blog-wrap post-listing">
+                        {{ page.content_full_bar }}
+                        {{ page.content }}
+                    </aside>
+                    <!-- / Blog Post Ends -->
+
+                    <!-- Product Categories Sidebar Starts -->
+                        {% if page.sidebar %}                     
+                        <aside class="sidebar pd-lf col-sm-4 col-md-4">
+                           {{ page.sidebar }}
+                        </aside>
+                        {% endif %}
+                    <!-- Product Categories Sidebar Starts -->
+                </div>
+            </div>
+    {% elseif term_machine_name == 'product_categories_fashion' %}
+    {% set bg_img_url = file_url(current_term.field_header_background.entity.uri.value) %}
+    <section class="breadcrumb-bg light-bg" style="background-image: url({{ bg_img_url }});">                
+        <div class="theme-container container ">
+            <div class="space-top-30"></div>
+            <div class="site-breadcumb col-md-6 space-80">                        
+                <h1 class="section-title size-48 no-margin space-bottom-20">{{ title }}</h1> 
+                <ol class="breadcrumb breadcrumb-menubar">
+                    {{ page.breadcrumbs }}                             
+                </ol>
+            </div>  
+        </div>
+    </section>
+        <section class="wrapper space-60">
+
+        <div class="theme-container container">
+            <div class="row">
+                <!-- Product Categories Starts -->
+                <aside class="col-md-9 col-sm-8 prod-categories cat-with-sidebar">
+                    {{ page.content_full_bar }}
+                    {{ page.content }}
+                </aside>
+                <!-- / Product Categories Ends -->
+
+                <!-- Product Categories Sidebar Starts -->
+                <aside class="sidebar with-border col-sm-4 col-md-3 space-15">
+                    {{ page.shop_sidebar }}
+                </aside>
+                <!-- Product Categories Sidebar Starts -->
+            </div>
+        </div>
+
+    </section>
+    {% else %}
+     {% set bg_img_url = file_url(current_term.field_header_background.entity.uri.value) %}
+    <section class="breadcrumb-bg light-bg" style="background-image: url({{ bg_img_url }});">                
+        <div class="theme-container container ">
+            <div class="space-top-30"></div>
+            <div class="site-breadcumb col-md-6 space-80">                        
+                <h1 class="section-title size-48 no-margin space-bottom-20">{{ title }}</h1> 
+                <ol class="breadcrumb breadcrumb-menubar">
+                    {{ page.breadcrumbs }}                             
+                </ol>
+            </div>  
+        </div>
+    </section>
+        <section class="wrapper space-60">
+
+        <div class="theme-container container">
+            <div class="row">
+                <!-- Product Categories Starts -->
+                <aside class="col-md-9 col-sm-8 prod-categories cat-with-sidebar">
+                    {{ page.content_full_bar }}
+                    {{ page.content }}
+                </aside>
+                <!-- / Product Categories Ends -->
+
+                <!-- Product Categories Sidebar Starts -->
+                    <aside class="sidebar with-border col-sm-4 col-md-3 space-15">
+                        {{ page.shop_sidebar }}
+                    </aside>
+                <!-- Product Categories Sidebar Starts -->
+            </div>
+        </div>
+    {% endif %}
+    {% if setting_footer == 'style2' %}
+        {% include theme_path ~ "/templates/footer/footer-2.html.twig" %}
+    {% elseif setting_footer == 'style3' %}
+        {% include theme_path ~ "/templates/footer/footer-3.html.twig" %}
+    {% elseif setting_footer == 'style4' %}
+        {% include theme_path ~ "/templates/footer/footer-4.html.twig" %}
+    {% elseif setting_footer == 'style5' %}
+        {% include theme_path ~ "/templates/footer/footer-5.html.twig" %}
+    {% elseif setting_footer == 'style6' %}
+        {% include theme_path ~ "/templates/footer/footer-6.html.twig" %}
+    {% elseif setting_footer == 'style7' %}
+        {% include theme_path ~ "/templates/footer/footer-7.html.twig" %}
+    {% elseif setting_footer == 'style8' %}
+        {% include theme_path ~ "/templates/footer/footer-8.html.twig" %}
+    {% elseif setting_footer == 'style9' %}
+        {% include theme_path ~ "/templates/footer/footer-9.html.twig" %}
+    {% elseif setting_footer == 'style10' %}
+        {% include theme_path ~ "/templates/footer/footer-10.html.twig" %}
+    {% else %}
+        {% include theme_path ~ "/templates/footer/footer-1.html.twig" %}
+    {% endif %}
+    <!-- /FOOTER -->
+
+    <div id="to-top" class="to-top"> <i class="arrow_carrot-up"></i> </div>
+
+</main>

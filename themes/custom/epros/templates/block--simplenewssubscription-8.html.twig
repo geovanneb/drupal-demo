@@ -1,0 +1,16 @@
+{% set classes = ['subscribe-wrap', ' epros-popup-newsletter'] %}
+<div {{ attributes.addClass(classes) }}>
+    {% if label %}
+    <h2 class="section-title space-bottom-15"> {{ label }} </h2>
+    {% endif %}
+    {{ title_suffix }}
+    {% if content %}
+        {{ content }}
+    {% endif %}
+   
+</div>
+<form class="subscribe-form"> 
+        <div class="form-group">                                
+            <label class="checkbox-inline black-color"> <input id="cb-hidden-nl" type="checkbox"> <span> {{ "Don't show this popup again"|t }} </span> </label>                                
+        </div>
+</form>

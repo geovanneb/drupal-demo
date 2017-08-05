@@ -1,0 +1,67 @@
+{% set bg_img_url = file_url(node.field_header_background.entity.uri.value) %}
+{% if setting_header == 'style2' %}
+    {% set header_classes = 'header-style-2' %}
+{% elseif setting_header == 'style3' %}
+    {% set header_classes = 'header-style-3' %}
+{% elseif setting_header == 'style4' %}
+    {% set header_classes = 'header-style-4' %}
+{% elseif setting_header == 'style5' %}
+    {% set header_classes = 'header-style-5' %}
+{% elseif setting_header == 'style6' %}
+    {% set header_classes = 'header-style-6' %}
+{% elseif setting_header == 'style7' %}
+    {% set header_classes = 'header-style-7' %}
+{% elseif setting_header == 'style8' %}
+    {% set header_classes = 'header-style-8' %}
+{% else %}
+    {% set header_classes = '' %}
+{% endif %}
+<main class="wrapper {{ header_classes }}"> 
+
+    <!-- CONTENT AREA -->
+    <section class="coming-soon-bg space-100 epros-coming-soon" style="background-image: url({{ bg_img_url }});">
+        <div class="theme-container container">                    
+            <!-- Coming Soon Starts -->
+            <div class="coming-wrap text-center space-bottom-70">
+                {% if header_logo_style == 'font_logo' %} 
+                    <h2 class="logo-title  font-2 space-bottom-70"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+                {% else %}
+                    <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+                {% endif %}
+                    {{ page.content}}                        
+                <hr class="divider-small"> 
+
+                <div id="coudddntdown" data-month="{{ cm_mm }}" data-day="{{ cm_dd }}" data-year="{{ cm_yyyy }}" data-time="{{ cm_time }}" class="countdown">
+                </div>  
+
+                <div class="countdown-wrapper space-top-15 space-bottom-40">
+                    <ul id="countdown-1" class="countdown" data-month="{{ cm_mm }}" data-day="{{ cm_dd }}" data-year="{{ cm_yyyy }}" data-time="{{ cm_time }}">
+                        <li>
+                            <span class="days">00</span>
+                            <p class="days_ref">days</p>
+                        </li>
+                        <li class="seperator">.</li>
+                        <li>
+                            <span class="hours">00</span>
+                            <p class="hours_ref">hours</p>
+                        </li>
+                        <li class="seperator">:</li>
+                        <li>
+                            <span class="minutes">00</span>
+                            <p class="minutes_ref">minutes</p>
+                        </li>
+                        <li class="seperator">:</li>
+                        <li>
+                            <span class="seconds">00</span>
+                            <p class="seconds_ref">seconds</p>
+                        </li>
+                    </ul>
+                </div>                         
+                <hr class="divider-small">                        
+                    {{ page.section }}                    
+            </div>
+            <!-- / Coming Soon Ends -->                 
+        </div>
+    </section>
+    <!-- / CONTENT AREA -->
+</main>

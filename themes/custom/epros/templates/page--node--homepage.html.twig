@@ -1,0 +1,155 @@
+<div id="full-site-wrapper">
+    <main class="wrapper "> 
+        <!-- Header -->
+        {% set homepage_type = node.field_homepage_type.0.value %}
+        {% if homepage_type == 'fashion' %}
+            {% include theme_path ~ "/templates/header/header-1.html.twig" %}
+        {% elseif homepage_type == 'interior' %}
+            {% include theme_path ~ "/templates/header/header-2.html.twig" %}
+        {% elseif homepage_type == 'cosmetic' %}
+            {% include theme_path ~ "/templates/header/header-3.html.twig" %}
+        {% elseif homepage_type == 'jewelry' %}
+            {% include theme_path ~ "/templates/header/header-4.html.twig" %}
+        {% elseif homepage_type == 'bakery' %}
+            {% include theme_path ~ "/templates/header/header-5.html.twig" %}
+        {% elseif homepage_type == 'bike' %}
+            {% include theme_path ~ "/templates/header/header-6.html.twig" %}
+        {% elseif homepage_type == 'sunglasses' %}
+            {% include theme_path ~ "/templates/header/header-7.html.twig" %}
+        {% elseif homepage_type == 'electronics' %}
+            {% include theme_path ~ "/templates/header/header-8.html.twig" %}
+        {% else %}
+            {% include theme_path ~ "/templates/header/header-9.html.twig" %}
+        {% endif %}
+        <!-- /Header -->
+
+        <!-- CONTENT AREA -->
+        
+        {% if homepage_type == 'fashion' %}
+            <section class="slider-section">
+            {{ page.slider }}
+            </section>  
+                 <section class="space-top-100">
+                      <div class="container theme-container">
+                          <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                              <div class="row">
+                                  <div class="grid">
+                                      <div class="grid-sizer"></div>
+                                        {{ page.section }}
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </section> 
+                  <div class="clearfix"></div>
+
+            {{ page.section_homepage }}
+        {% elseif homepage_type == 'jewelry' %}
+            {{ page.slider }}  
+            <section>
+                <div class="container theme-container">
+
+                    <div class="grid">
+                        <div class="grid-sizer"></div>
+                        {{ page.section }}
+                    </div>
+
+                </div>
+            </section>
+            <div class="clearfix"></div>
+
+            {{ page.section_homepage }}
+            <div class="modal fade login-register" id="video-popup" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog video-frame">                 
+            <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div class="video-popup-link"> 
+            <iframe id="video" width="800" height="500" allowfullscreen=""> </iframe>
+            </div>
+            </div>
+            </div>
+        {% elseif homepage_type == 'bakery' %}
+            {{ page.slider }}
+            <section id="about-us" class="clearfix">
+                {{ page.section }}
+            </section>
+            {{ page.section_homepage }}
+        {% elseif homepage_type == 'barber' %}
+            {{ page.slider }}  
+            <section>
+                <div class="grid">
+                    <div class="grid-sizer"></div>
+                    {{ page.section }}
+                </div>
+            </section>
+            {{ page.section_homepage }}
+            <div class="modal fade login-register" id="video-popup" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog video-frame">                 
+                    <button type="button" class="close close-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div class="video-popup-link"> 
+                        <iframe id="video" width="800" height="500" allowfullscreen=""> </iframe>
+                    </div>
+                </div>
+            </div>
+        {% elseif homepage_type == 'electronics' %}
+
+            <section class="cate-bar">
+                <div class="container theme-container">
+                    {{ page.section }}
+                </div>
+            </section>
+            <section class="container theme-container space-bottom-30"> 
+                <div class="col-md-3 col-sm-4 col-xs-12 no-padding cate-wrap">
+                    {{ page.menu_taxonomy }}
+                </div>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <!-- Main Slider Start -->
+                    {{ page.slider }}
+                    <!-- / Main Slider Ends -->  
+                </div>
+            </section>
+            {{ page.section_homepage }}
+        {% elseif homepage_type == 'bike' %}
+            {{ page.slider }} 
+            {{ page.section_homepage }}
+            {{ page.testimonial_slider }}
+        {% else %}
+            {{ page.slider }}  
+            {{ page.section_homepage }}
+        {% endif %}
+        <!-- / CONTENT AREA -->
+
+        <!-- FOOTER -->
+        {% if homepage_type == 'fashion' %}
+            {% include theme_path ~ "/templates/footer/footer-1.html.twig" %}
+        {% elseif homepage_type == 'interior' %}
+            {% include theme_path ~ "/templates/footer/footer-2.html.twig" %}
+        {% elseif homepage_type == 'cosmetic' %}
+            {% include theme_path ~ "/templates/footer/footer-3.html.twig" %}
+        {% elseif homepage_type == 'jewelry' %}
+            {% include theme_path ~ "/templates/footer/footer-4.html.twig" %}
+        {% elseif homepage_type == 'bakery' %}
+            {% include theme_path ~ "/templates/footer/footer-5.html.twig" %}
+        {% elseif homepage_type == 'bike' %}
+            {% include theme_path ~ "/templates/footer/footer-6.html.twig" %}
+        {% elseif homepage_type == 'sunglasses' %}
+            {% include theme_path ~ "/templates/footer/footer-7.html.twig" %}
+        {% elseif homepage_type == 'electronics' %}
+            {% include theme_path ~ "/templates/footer/footer-8.html.twig" %}
+        {% else %}
+            {% include theme_path ~ "/templates/footer/footer-9.html.twig" %}
+        {% endif %}
+        <!-- /FOOTER -->
+
+        <div id="to-top" class="to-top"> <i class="arrow_carrot-up"></i> </div>
+
+    </main>
+    <section class="subscribe-me" style="background-image: url({{ footer_image_popup_newslester_bg }});">
+        <a href="#close" class="sb-close-btn icon_close"></a>      
+        <div class="popup-newsletter">
+            <div class="col-md-7 col-sm-7 text-center space-top-50">
+                {{ page.footer_bottom }}
+            </div>
+        </div>
+    </section>
+<!-- /WRAPPER -->
+</div> <!-- Full Site Wrapper -->

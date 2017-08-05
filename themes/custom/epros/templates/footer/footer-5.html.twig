@@ -1,0 +1,21 @@
+<footer id="epros-footer-5" class="footer white-color" style="background-image: url({{ footer_image_bg }});">  
+    <span class="mask-overlay"></span>
+    <section class="footer-bg">
+        <div class="space-80 footer-widget">
+            <div class="container theme-container">
+                <div class="row">
+                    {{ page.footer_5_column_1 }}
+                    {{ page.footer_5_column_2 }}        
+                    {{ page.footer_5_column_3 }}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if copyright_text %}
+    <section class="space-80">
+        <div class="container theme-container">
+            {{ copyright_text|t }}
+        </div>
+    </section>
+    {% endif %}
+</footer>

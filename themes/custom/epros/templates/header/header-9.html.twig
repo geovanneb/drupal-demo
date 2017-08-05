@@ -1,0 +1,36 @@
+<header class="main-header">               
+    <section class="header-wrap upper-text"> 
+        <div class="top-bar">
+            <div class="col-md-2 col-sm-3"> 
+                <div class="logo  navbar-brand">
+                    {% if header_logo_style == 'font_logo' %} 
+                        <h2 class="logo-title  font-2"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+                    {% else %}
+                        <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+                    {% endif %}                               
+                    <span class="nav-trigger toggle-hover visible-xs">
+                        <a class="toggle-icon icon-cube size-24" href="#"> </a>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-8 col-sm-12 navigation  font-2">
+                {{ page.main_menu }}
+            </div>
+            <div class="col-md-2 col-sm-3 top-right text-right">
+                <ul class="top-elements">                                                       
+                    <li class="search-hover"> 
+                        <a href="#search-popup" class="search-icon icon-cube size-24">  </a> 
+                        {{ page.search }}
+                    </li>
+                    {{ page.header_cart }}
+                    <li class="toggle-hover"> 
+                        <a href="#" class="toggle-icon icon-cube size-24">  </a> 
+                        <ul class="pop-up-box">
+                            {{ page.top_menu }}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>            
+</header>

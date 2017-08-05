@@ -93,11 +93,11 @@ class YamlDumper extends Dumper
         }
 
         if ($definition->isSynthetic()) {
-            $code .= "        synthetic: true\n";
+            $code .= sprintf("        synthetic: true\n");
         }
 
         if ($definition->isSynchronized(false)) {
-            $code .= "        synchronized: true\n";
+            $code .= sprintf("        synchronized: true\n");
         }
 
         if ($definition->isDeprecated()) {
@@ -121,7 +121,7 @@ class YamlDumper extends Dumper
         }
 
         if ($definition->isLazy()) {
-            $code .= "        lazy: true\n";
+            $code .= sprintf("        lazy: true\n");
         }
 
         if ($definition->getFactoryMethod(false)) {
@@ -188,7 +188,7 @@ class YamlDumper extends Dumper
             return sprintf("    %s: '@%s'\n", $alias, $id);
         }
 
-        return sprintf("    %s:\n        alias: %s\n        public: false\n", $alias, $id);
+        return sprintf("    %s:\n        alias: %s\n        public: false", $alias, $id);
     }
 
     /**
@@ -327,7 +327,7 @@ class YamlDumper extends Dumper
      *
      * @return array
      */
-    private function prepareParameters(array $parameters, $escape = true)
+    private function prepareParameters($parameters, $escape = true)
     {
         $filtered = array();
         foreach ($parameters as $key => $value) {
@@ -350,7 +350,7 @@ class YamlDumper extends Dumper
      *
      * @return array
      */
-    private function escape(array $arguments)
+    private function escape($arguments)
     {
         $args = array();
         foreach ($arguments as $k => $v) {

@@ -1,0 +1,57 @@
+<section class="header-wrap">
+    <div class="top-bar">
+        <div class=""> 
+            <div class="logo navbar-brand hidden-xs">
+                {% if header_logo_style == 'font_logo' %} 
+                    <h2 class="logo-title  font-2"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+                {% else %}
+                    <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+                {% endif %}
+                {% if header_slogan %}
+                    {{ header_slogan|t }}
+                {% endif %}
+                </div>
+        </div>
+        <div class="navigation font-2">
+            {{ page.main_menu }}
+        </div>  
+        {{ page.section_main_menu }}
+    </div>
+</section>
+<header class="main-header">  
+    <section class="header-topbar border">
+        <div class="col-md-12"> 
+            <div class="resp-row">  
+                <div class="col-md-3 col-sm-3">
+                    <div class="resp-logo visible-xs">
+                        {% if header_logo_style == 'font_logo' %} 
+                            <h2 class="logo-title  font-2"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+                        {% else %}
+                            <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+                        {% endif %}
+                        {% if header_slogan %}
+                            {{ header_slogan|t }}
+                        {% endif %}
+                    </div>
+                    <span class="nav-trigger toggle-hover">
+                        <a class="toggle-icon icon-cube size-24" href="#"> </a>
+                    </span>
+                </div>
+                <div class="col-md-9 col-sm-9 top-right pull-right text-right">
+                    <ul class="top-elements">
+                        <li class="search-box">                     
+                            {{ page.search_2 }}
+                        </li>
+                        {{ page.header_cart }}
+                        <li class="toggle-hover"> 
+                            <a href="#" class="toggle-icon icon-cube size-24">  </a> 
+                            <ul class="pop-up-box">
+                                {{ page.top_menu }}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>    
+        </div>
+    </section>             
+</header>

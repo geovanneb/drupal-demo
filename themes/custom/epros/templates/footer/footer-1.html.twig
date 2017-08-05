@@ -1,0 +1,12 @@
+<footer id="epros-footer-1" class="footer text-center">             
+    <section class="space-70 footer-bg white-color">
+        <div class="container theme-container">
+            {{ page.footer_social_bar }}
+        </div>
+    </section>
+    {% if copyright_text %}
+    <section class="black-bg space-15">
+        {{ copyright_text|t }}
+    </section>
+    {% endif %}
+</footer>

@@ -1,0 +1,69 @@
+{% set bg_img_url = file_url(node.field_erro_image.entity.uri.value) %}
+{% if setting_header == 'style2' %}
+    {% set header_classes = 'header-style-2' %}
+{% elseif setting_header == 'style3' %}
+    {% set header_classes = 'header-style-3' %}
+{% elseif setting_header == 'style4' %}
+    {% set header_classes = 'header-style-4' %}
+{% elseif setting_header == 'style5' %}
+    {% set header_classes = 'header-style-5' %}
+{% elseif setting_header == 'style6' %}
+    {% set header_classes = 'header-style-6' %}
+{% elseif setting_header == 'style7' %}
+    {% set header_classes = 'header-style-7' %}
+{% elseif setting_header == 'style8' %}
+    {% set header_classes = 'header-style-8' %}
+{% else %}
+    {% set header_classes = '' %}
+{% endif %}
+<main class="wrapper epros-front-header epros-menu-accout {{ header_classes }}"> 
+    <!-- Header -->
+    {% include theme_path ~ "/templates/header/header-1.html.twig" %}
+    <!-- /Header -->
+
+
+    <!-- CONTENT AREA -->
+    <section class="wrapper space-100 page-error">
+        <div class="theme-container container">
+            <div class="space-80 visible-lg"></div>
+            <!-- Error Starts -->
+            
+            <div class="error-wrap text-center space-bottom-70">
+                <img src="{{ bg_img_url }}" alt="Background">
+                    {{ page.content }} 
+                    {{ page.section_homepage_404 }}  
+            </div>
+            <!-- / Error Ends -->
+            <div class="space-bottom-70 visible-lg"></div>
+        </div>
+    </section>
+    <!-- / CONTENT AREA -->
+
+    <!-- FOOTER -->
+    {% if setting_footer == 'style2' %}
+        {% include theme_path ~ "/templates/footer/footer-2.html.twig" %}
+    {% elseif setting_footer == 'style3' %}
+        {% include theme_path ~ "/templates/footer/footer-3.html.twig" %}
+    {% elseif setting_footer == 'style4' %}
+        {% include theme_path ~ "/templates/footer/footer-4.html.twig" %}
+    {% elseif setting_footer == 'style5' %}
+        {% include theme_path ~ "/templates/footer/footer-5.html.twig" %}
+    {% elseif setting_footer == 'style6' %}
+        {% include theme_path ~ "/templates/footer/footer-6.html.twig" %}
+    {% elseif setting_footer == 'style7' %}
+        {% include theme_path ~ "/templates/footer/footer-7.html.twig" %}
+    {% elseif setting_footer == 'style8' %}
+        {% include theme_path ~ "/templates/footer/footer-8.html.twig" %}
+    {% elseif setting_footer == 'style9' %}
+        {% include theme_path ~ "/templates/footer/footer-9.html.twig" %}
+    {% elseif setting_footer == 'style10' %}
+        {% include theme_path ~ "/templates/footer/footer-10.html.twig" %}
+    {% else %}
+        {% include theme_path ~ "/templates/footer/footer-1.html.twig" %}
+    {% endif %}
+    <!-- /FOOTER -->
+
+
+    <div id="to-top" class="to-top"> <i class="arrow_carrot-up"></i> </div>
+
+</main>

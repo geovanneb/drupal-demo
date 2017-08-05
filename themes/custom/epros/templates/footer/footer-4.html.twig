@@ -1,0 +1,21 @@
+<footer id="epros-footer-4" class="footer">             
+    <section class="footer-bg">
+        <div class="space-50 footer-widget">
+            <div class="container theme-container">
+                <div class="row">
+                    {{ page.footer_4_column_1 }}
+                    {{ page.footer_4_column_2 }}                              
+                    {{ page.footer_4_column_3 }}
+                    {{ page.footer_4_column_4 }}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if copyright_text %}
+    <section class="space-bottom-70">
+        <div class="container theme-container space-top-30">
+            {{ copyright_text|t }}
+        </div>
+    </section>
+    {% endif %}
+</footer>

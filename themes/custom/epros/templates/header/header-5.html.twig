@@ -1,0 +1,41 @@
+<header class="main-header">  
+    <section class="header-wrap upper-text"> 
+        <div class="container theme-container">
+            <div class="top-bar">
+                <div class="row">  
+                    <div class="logo"> 
+                        <div class="navbar-brand">
+                            {% if header_logo_style == 'font_logo' %} 
+                                <h2 class="logo-title  font-2"> <a href="{{ path('<front>') }}"> {{ text|t }} </a> </h2> 
+                            {% else %}
+                                <a href="{{ path('<front>') }}"><img alt="{{ site_name }}" src="{{ header_logo_image_bg }}"></a>
+                            {% endif %}
+                            <span class="nav-trigger toggle-hover visible-xs">
+                                <a class="toggle-icon icon-cube size-24" href="#"> </a>
+                            </span>
+                        </div>
+                    </div>    
+                    <div class="col-md-11 col-sm-12">
+                        <div class="navigation font-2 row">
+                            <nav>                                                               
+                                <div class="navbar-collapse no-padding" id="primary-navigation">                                        
+                                    {{ page.menu_left }}
+                                    {{ page.menu_right}}
+                                </div>   
+                            </nav> 
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-2 no-padding top-right text-right">
+                        <ul class="top-elements">                                                       
+                            <li class="search-hover"> 
+                                <a href="#search-popup" class="search-icon icon-cube size-24">  </a> 
+                                {{ page.search }}
+                            </li>
+                                {{ page.header_cart }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+</header>

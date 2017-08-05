@@ -1,0 +1,1707 @@
+<?php
+global $base_url;
+use Drupal\image\Entity\ImageStyle;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\UrlHelper;
+
+function epros_theme_suggestions_html_alter(array &$suggestions, array $variables) {
+	if (\Drupal::routeMatch()->getParameter('node')) {
+		$node = \Drupal::routeMatch()->getParameter('node');
+		$suggestions[] = 'html__node__' . $node->getType();
+	}
+}
+
+function epros_css_alter(&$css) {
+	$theme_path = drupal_get_path('theme', 'epros');
+	// Add googlefonts.
+
+	$googlefonts3 = 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700';
+	$googlefonts2 = 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,400italic';
+	$googlefonts = 'https://fonts.googleapis.com/css?family=Montserrat:400,700';
+	$googlefonts1 = 'https://fonts.googleapis.com/css?family=Oswald:400,300,700';
+	//google font
+	$css[$googlefonts] = array(
+	'data' => $googlefonts,
+	'type' => 'external',
+	'every_page' => TRUE,
+	'media' => 'all',
+	'preprocess' => FALSE,
+	'group' => CSS_AGGREGATE_THEME,
+	'browsers' => array('IE' => TRUE, '!IE' => TRUE),
+	'weight' => 1,
+	);
+	$css[$googlefonts1] = array(
+	'data' => $googlefonts1,
+	'type' => 'external',
+	'every_page' => TRUE,
+	'media' => 'all',
+	'preprocess' => FALSE,
+	'group' => CSS_AGGREGATE_THEME,
+	'browsers' => array('IE' => TRUE, '!IE' => TRUE),
+	'weight' => 0,
+	);
+	$css[$googlefonts2] = array(
+	'data' => $googlefonts2,
+	'type' => 'external',
+	'every_page' => TRUE,
+	'media' => 'all',
+	'preprocess' => FALSE,
+	'group' => CSS_AGGREGATE_THEME,
+	'browsers' => array('IE' => TRUE, '!IE' => TRUE),
+	'weight' => -1,
+	);
+	
+}
+
+function epros_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+	if ($node = \Drupal::routeMatch()->getParameter('node')) {
+		$suggestions[] = 'page__node__' . $node->getType();
+	}
+}
+function epros_preprocess_block(&$variables) {
+	//get region in block.html.twig
+	//if config as block base
+	//kint($variables['elements']['#id'])
+	global $base_url;
+	switch ($variables['base_plugin_id']) {
+	    case 'system_branding_block':
+	      $variables['site_logo'] = '';
+	      if ($variables['content']['site_logo']['#access'] && $variables['content']['site_logo']['#uri']) {
+	        $variables['site_logo'] = str_replace('.svg', '.png', $variables['content']['site_logo']['#uri']);
+	      }
+	    break;
+
+  	}
+	
+	if(isset($variables['elements']['#id']) && !empty($variables['elements']['#id'])){
+		$block_id = $variables['elements']['#id'];
+	  	$block = \Drupal\block\Entity\Block::load($block_id);
+	  	if($block->getRegion()){
+	  		$region = $block->getRegion();
+	  		$variables['region'] = $region;
+	  	}
+	//config as context module
+	}else{
+		$variables['region'] = $variables['elements']['#configuration']['region'];
+	}
+}
+
+function epros_preprocess_node(&$vars) {
+	global $base_url;
+	$site_name = \Drupal::config('system.site')->get('name');
+	$vars['site_name'] = $site_name;	
+	$request = \Drupal::request();
+	if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+		$vars['title'] = \Drupal::service('title_resolver')->getTitle($request, $route);
+	}
+	$pageURL = 'http';	
+ 	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
+ 		$pageURL .= "s";
+ 	}
+	$pageURL .= '://';
+ 	if($_SERVER['SERVER_PORT'] != '80'){
+  	$pageURL .= $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
+ 	}else{
+  		$pageURL .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+ 	}
+ 	$vars['pageURL'] = $pageURL;
+
+ 	if(\Drupal::routeMatch()->getParameter('node')){
+ 		$node = \Drupal::routeMatch()->getParameter('node');
+ 		//kint($node->changed->value);
+ 		$vars['totalcount'] = statistics_get($node->nid->getValue()[0]['value'])['totalcount'];
+		$ntype = $node->getType();
+	  	if($ntype == 'blog_post'){
+	  		$blog_current_format = $node->field_blog_format->value;
+	  		//get multi image url start
+	  		if($blog_current_format == 'standard' || $blog_current_format == 'gallery' || $blog_current_format == 'slider' || $blog_current_format == 'quote'){
+	  			if(isset($node->field_blog_image) && !empty($node->field_blog_image)){
+			  		$img_gallery_array = array();
+			  		foreach($node->field_blog_image as $k => $v){
+			  			$fid = ($v->getValue()['target_id']);
+			  			$img_gallery_array[$k] = file_create_url(file_load($fid)->uri->value);
+			  		}
+			  		$vars['multi_url_image'] = $img_gallery_array;
+		  		}
+		  	//kint($img_gallery_array);
+	  		}
+	  		//multi image url end
+	  		//next post start
+			$storage = \Drupal::entityManager()->getStorage('node');
+		    $nids = $storage->getQuery()
+		        ->condition('type', 'blog_post')
+		        ->condition('status', 1)
+		        ->condition('nid',$node->nid->value, '!=')
+		        ->condition('changed', $node->changed->value, '>')
+		        ->range(0,1)
+		        ->execute();
+		        //print_r($nids);
+			//$random_pds = array_rand($nids,4);
+			//print_r($nids);
+		    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+		    //$arr_products = array();
+		   
+		    //print $posi;
+		    //print $sign_currency;
+		    $next_post = '';
+		    $i = 0;
+
+		    foreach (entity_load_multiple('node',$nids) as $key => $n) {
+		    	if($i > 0){
+		    		break;
+		    	}else{
+		    		$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$n->nid->value);
+					$path_alias_cs = ltrim($path_alias,'/');
+		    		$next_post .= '<a href="'.base_path().$path_alias_cs.'" id="nextpost"><span>Next Post <i class="fa fa-angle-double-right"></i></span>'.$n->title->value.'</a>';
+		    		$i++;
+		    	}  	
+		    }
+			$vars['next_post'] = $next_post;
+			//next post end
+			//Previous post start
+			$storage = \Drupal::entityManager()->getStorage('node');
+		    $nids = $storage->getQuery()
+		        ->condition('type', 'blog_post')
+		        ->condition('status', 1)
+		        ->condition('nid',$node->nid->value, '!=')
+		        ->condition('changed', $node->changed->value, '<')
+		        ->range(0,1)
+		        ->execute();
+		        //print_r($nids);
+		    $previous_post = '';
+		    $i = 0;
+			$vars['previous_post'] = $previous_post;
+			//Previous post end
+			//related posts start
+			$tids = array();
+			$current_post_format = $node->field_blog_format->value;
+			$storage = \Drupal::entityManager()->getStorage('node');
+		    $nids = $storage->getQuery()
+		        ->condition('type', 'blog_post')
+		        ->condition('status', 1)
+		        ->condition('nid', $node->nid->value, '!=')
+		        ->condition('field_blog_format.value', $current_post_format, '=')
+		        ->range(0,4)
+		        ->execute();
+		        //print_r($nids);
+			//$random_pds = array_rand($nids,);
+			//print_r($nids);
+		    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+		    $related_posts = ' <div class="related-post post-grid space-top-20">
+						       		<h2 class="section-title size-18 no-margin">Realated Posts</h2>
+						            <div class="row space-top-40">
+                						<div class="related-post-slider"> ';
+		    foreach(entity_load_multiple('node',$nids) as $k => $n){
+		    	$name = $n->getRevisionAuthor()->name->value;
+		    	//kint($v->price);
+		    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$n->nid->getValue()[0]['value']);
+				$node_url = base_path().ltrim($path_alias,'/');
+				$blog_format = $n->field_blog_format->value;
+				$build_cate = $n->field_category->view('related');
+				$cate = \Drupal::service('renderer')->renderRoot($build_cate);	
+		    	//print(file_create_url(file_load($aaa)->uri->value));
+		    	/////////////////////////////////////////////////////////
+				//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+				//print $node_url;
+				//print($url);
+				$output1 = '';
+				if($blog_format == 'video_embed'){
+					$build_video = $n->field_video_embed->view('related');
+					$video_thumb = \Drupal::service('renderer')->renderRoot($build_video);	
+					$out = $video_thumb;
+				}else{
+					$build_image = $n->field_blog_image->view('related');
+					$image_thumb = \Drupal::service('renderer')->renderRoot($build_image);	
+					$out = $image_thumb;
+				}
+				$related_posts .= '<div class="item">
+									<div class="post-wrap">
+									    <div class="post-media space-bottom-30">
+									        '.render($out).'
+									    </div>
+									    <div class="post-header">
+									        <a href="'.$node_url.'" class="post-title size-18">'.$n->title->value.'</a>
+									        <ul class="list-items font-2 post-meta">
+									            <li>'.$name.'</li> 
+									            <li>'.format_date($n->created->value, 'custom', 'F d, Y').'</li> 
+									            <li>'.render($cate).'</li>
+									        </ul>
+									    </div>                                           
+									</div>
+								</div>';
+						
+				
+			}
+			$related_posts .= '</div></div></div>';
+			$vars['is_exist_rp'] = $nids;
+			$vars['related_posts'] = $related_posts;
+			//related posts end
+			//category
+			$n = 0;
+			$term_path = array();
+			$count_cate = count($node->field_category);
+			foreach ($node->field_category as $k => $v) {
+				$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/taxonomy/term/'.$v->entity->tid->value);
+				$path_alias_cs = ltrim($path_alias,'/');
+				$n++;
+				if($n < $count_cate){
+		 			$term_path[$k] = '<a href="'.base_path().$path_alias_cs.'">'.$v->entity->name->value.'</a>, ';
+		 		}else{
+		 			$term_path[$k] = '<a href="'.base_path().$path_alias_cs.'">'.$v->entity->name->value.'</a>';
+		 		}
+			}
+			$variables['link_categories'] = $term_path;
+			//end category
+		}
+		if($ntype == 'product'){
+				$product_belongs = $node->field_product_belongs->getValue()[0]['value'];
+				// related product fashion
+				if($product_belongs == 'fashion'){
+					//kint($node->field_product_category->getValue());
+					$tids = array();
+					foreach($node->field_product_category_fashion->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_fashion.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_fashion_pd'] = 1;
+
+					}else{
+						$vars['is_related_fashion_pd'] = 0;
+					}
+					$vars['related_products_fashion'] = $arr_products;
+				// end related product fashion
+				// related product interior
+				}elseif($product_belongs == 'interior'){
+					$tids = array();
+					foreach($node->field_product_category_interior->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_interior.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_interior_pd'] = 1;
+
+					}else{
+						$vars['is_related_interior_pd'] = 0;
+					}
+					$vars['related_products_interior'] = $arr_products;
+				// end related product interior
+				// related product cosmetic
+				}elseif($product_belongs == 'cosmetic'){
+					$tids = array();
+					foreach($node->field_product_category_cosmetic->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_cosmetic.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_cosmetic_pd'] = 1;
+
+					}else{
+						$vars['is_related_cosmetic_pd'] = 0;
+					}
+					$vars['related_products_cosmetic'] = $arr_products;
+				// end related product cosmetic
+				// related product bakery
+				}elseif($product_belongs == 'bakery'){
+					$tids = array();
+					foreach($node->field_product_category_bakery->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_bakery.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_bakery_pd'] = 1;
+
+					}else{
+						$vars['is_related_bakery_pd'] = 0;
+					}
+					$vars['related_products_bakery'] = $arr_products;
+				// end related product bakery
+				// related product bike
+				}elseif($product_belongs == 'bike'){
+					$tids = array();
+					foreach($node->field_product_category_bike->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_bike.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_bike_pd'] = 1;
+
+					}else{
+						$vars['is_related_bike_pd'] = 0;
+					}
+					$vars['related_products_bike'] = $arr_products;
+				// end related product bike
+				// related product sunglasses
+				}elseif($product_belongs == 'sunglasses'){
+					$tids = array();
+					foreach($node->field_product_category_sunglasse->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_sunglasse.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_bike_sunglasses'] = 1;
+
+					}else{
+						$vars['is_related_bike_sunglasses'] = 0;
+					}
+					$vars['related_products_sunglasses'] = $arr_products;
+				// end related product sunglasses
+				// related product electronics
+				}elseif($product_belongs == 'electronics'){
+					$tids = array();
+					foreach($node->field_product_category_electroni->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_electroni.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_bike_electronics'] = 1;
+
+					}else{
+						$vars['is_related_bike_electronics'] = 0;
+					}
+					$vars['related_products_electronics'] = $arr_products;
+				// end related product electronics
+				// related product barber
+				}else{
+					$tids = array();
+					foreach($node->field_product_category_barber->getValue() as $k => $tarr){
+						$tids[$k] = $tarr['target_id'];
+					}
+					$storage = \Drupal::entityManager()->getStorage('node');
+				    $nids = $storage->getQuery()
+				        ->condition('type', 'product')
+				        ->condition('status', 1)
+				        ->condition('nid',$node->nid->value , '!=')
+				        ->condition('field_product_category_barber.entity.tid', $tids, 'IN')
+				        ->range(0,4)
+				        ->execute();
+				        //print_r($nids);
+						$random_pds = $nids;
+					//print_r($nids);
+				    //$vars['related_products'] = $storage->loadMultiple($random_pds);
+				    $arr_products = array();
+				    if(count($random_pds)){
+					    $config = \Drupal::config('uc_store.settings');
+					    $sign_currency = $config->get('currency.symbol');
+					    $posi = $config->get('currency.symbol_after');
+					    foreach(entity_load_multiple('node',$random_pds) as $k => $v){
+					    	if($posi == 1){
+					    		//$uc_price = $v->price->getValue()[0]['value'].$sign_currency;
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = number_format($uc_price,2).$sign_currency;
+					    	}else{
+					    		$uc_price = (float)$v->price->getValue()[0]['value'];
+					    		$uc_price_fm = $sign_currency.number_format($uc_price,2);
+					    	}
+					    	//kint($v->price);
+					    	$pd_fid_arr = array();
+							foreach ($v->uc_product_image as $key => $value) {
+								$pd_fid_arr[$key] = $value->getValue()['target_id'];
+								# code...
+							}
+					    	$fid = $v->uc_product_image->getValue()[0]['target_id'];
+					    	//print(file_create_url(file_load($aaa)->uri->value));
+					    	/////////////////////////////////////////////////////////
+					    	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$v->nid->getValue()[0]['value']);
+							$node_url = ltrim($path_alias,'/');
+							//$node_url = url('node/'.$v->nid->getValue()[0]['value']);
+							//print $node_url;
+							$uri_image1 = file_load($pd_fid_arr[0])->uri->value;
+							$uri_image2 = file_load($pd_fid_arr[1])->uri->value;
+
+							$style1 = ImageStyle::load('image_270x360');
+						  	$url_image1 = $style1->buildUrl($uri_image1);
+						  	$url_image2 = $style1->buildUrl($uri_image2);
+							//print($url);
+							$arr_products[$k] = '<div class="thumbnail-wrap">
+												    <div class="thumbnail">
+												        <div class="thumbnail-img light-bg">
+												            <div class="flipper">
+												                <div class="front">
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image1.'" alt="'.$v->getTitle().'"/> </a>
+												                </div>
+												                <div class="back">                                                               
+												                    <a href="'.$node_url.'"> <img class="img-responsive" src="'.$url_image2.'" alt="'.$v->getTitle().'"/> </a>
+												                </div> 
+												            </div>                                                   
+												        </div>
+												        <div class="caption">
+												            <div class="caption-title space-15"><a href="'.$node_url.'" class="title-2">'.$v->getTitle().'</a></div>
+												            <div class="caption-text font-3"> <span class="size-18 black-color">'.$uc_price_fm.'</span> </div>                                                   
+												        </div>
+												    </div>
+												</div>';
+
+						}
+					}
+					if(count($random_pds)){
+						$vars['is_related_bike_barber'] = 1;
+
+					}else{
+						$vars['is_related_bike_barber'] = 0;
+					}
+					$vars['related_products_barber'] = $arr_products;
+				}
+				// end related product barber
+		}
+
+
+	}
+	$url = theme_get_setting('blog_sidebar', 'epros');
+	if(isset($listing_sidebar) && !empty($listing_sidebar)){
+		$vars['listing_sidebar'] = $listing_sidebar;
+	}else{
+		$vars['listing_sidebar'] = 'left';
+	}
+ 	//get current term (tid)
+	/*if (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.canonical') {
+	  	$term_id = \Drupal::routeMatch()->getRawParameter('taxonomy_term');
+	  	$term = taxonomy_term_load($term_id);
+	  	//$term_name = $term_object->get('name')->value;
+		$vars['current_term'] = $term;
+	}*/
+
+
+	/*$blocks_name = \Drupal::entityManager()->getStorage('block')->loadByProperties(['region' => 'content_full_bar', 'theme' => \Drupal::theme()->getActiveTheme()->getName()]); 
+	foreach($blocks_name as $k => $v){
+		$block = \Drupal\block\Entity\Block::load($k);
+		$arr_block[$k] = (\Drupal::entityManager()->getViewBuilder('block')->view($block));
+	}
+	if(isset($arr_block) && !empty($arr_block)){
+		$vars['blocks_output'] = $arr_block;
+	}*/
+	//kint($variables['blocks_output']);*/
+
+}
+function epros_preprocess(&$variables){
+	$theme_path = base_path().drupal_get_path('theme', 'epros');
+	$variables['path_to_theme_epros'] = $theme_path;
+	$blog_layout = theme_get_setting('blog_layout', 'epros');
+	if(isset($blog_layout) && !empty($blog_layout)){
+		$variables['blog_layout'] = $blog_layout;
+	}else{
+		$variables['blog_layout'] = 'standard';
+	}
+
+	///blog_out_demo
+	if(!empty(theme_get_setting('blog_layout_demo', 'epros'))){
+		$blog_layout_demo = theme_get_setting('blog_layout_demo', 'epros');
+	}else{
+		$blog_layout_demo = FALSE;
+	}
+
+	if($blog_layout_demo == TRUE){
+		if(isset($_GET['blog_layout']) && !empty($_GET['blog_layout'])){
+			if($_GET['blog_layout'] == 'grid'){
+				$variables['blog_layout'] = 'grid';
+			}elseif($_GET['blog_layout'] == 'small'){
+				$variables['blog_layout'] = 'small';
+			}elseif($_GET['blog_layout'] == 'masonry'){
+				$variables['blog_layout'] = 'masonry';
+			}else{
+				$variables['blog_layout'] = 'standard';
+			}
+		}else{
+			$blog_layout = theme_get_setting('blog_layout', 'epros');
+			if(isset($blog_layout) && !empty($blog_layout)){
+				$variables['blog_layout'] = $blog_layout;
+			}else{
+				$variables['blog_layout'] = 'standard';
+			}
+		}
+	}else{
+		$blog_layout = theme_get_setting('blog_layout', 'epros');
+		if(isset($blog_layout) && !empty($blog_layout)){
+			$variables['blog_layout'] = $blog_layout;
+		}else{
+			$variables['blog_layout'] = 'standard';
+		}
+	}
+	///direction
+	$direction = theme_get_setting('direction', 'epros');
+	if(isset($direction) && !empty($direction)){
+		$variables['direction'] = $direction;
+	}else{
+		$variables['direction'] = 'ltr';
+	}
+	///
+	$shop_sidebar = theme_get_setting('shop_sidebar', 'epros');
+	if(isset($shop_sidebar) && !empty($shop_sidebar)){
+		$variables['shop_sidebar'] = $shop_sidebar;
+	}else{
+		$variables['shop_sidebar'] = 'right';
+	}
+	///
+	
+	$shop_sidebar = theme_get_setting('shop_sidebar', 'epros');
+	if(isset($shop_sidebar) && !empty($shop_sidebar)){
+		$variables['shop_sidebar'] = $shop_sidebar;
+	}else{
+		$variables['shop_sidebar'] = 'right';
+	}
+	$header_logo_style = theme_get_setting('header_logo_style', 'epros');
+	if(isset($header_logo_style) && !empty($header_logo_style)){
+		$variables['header_logo_style'] = $header_logo_style;
+	}else{
+		$variables['header_logo_style'] = 'font_logo';
+	}
+	$shop_listing_sidebar = theme_get_setting('shop_listing_sidebar', 'epros');
+	if(isset($shop_listing_sidebar) && !empty($shop_listing_sidebar)){
+		$variables['shop_listing_sidebar'] = $shop_listing_sidebar;
+	}else{
+		$variables['shop_listing_sidebar'] = 'right';
+	}
+	///shop_listing_sidebar_demo
+	if(!empty(theme_get_setting('shop_listing_sidebar_demo', 'epros'))){
+		$shop_listing_sidebar_demo = theme_get_setting('shop_listing_sidebar_demo', 'epros');
+	}else{
+		$shop_listing_sidebar_demo = FALSE;
+	}
+
+	if($shop_listing_sidebar_demo == TRUE){
+		if(isset($_GET['shop_listing_sidebar']) && !empty($_GET['shop_listing_sidebar'])){
+			if($_GET['shop_listing_sidebar'] == 'none'){
+				$variables['shop_listing_sidebar'] = 'none';
+			}elseif($_GET['shop_listing_sidebar'] == 'left'){
+				$variables['shop_listing_sidebar'] = 'left';
+			}else{
+				$variables['shop_listing_sidebar'] = 'right';
+			}
+		}else{
+			$shop_listing_sidebar = theme_get_setting('shop_listing_sidebar', 'epros');
+			if(isset($shop_listing_sidebar) && !empty($shop_listing_sidebar)){
+				$variables['shop_listing_sidebar'] = $shop_listing_sidebar;
+			}else{
+				$variables['shop_listing_sidebar'] = 'right';
+			}
+		}
+	}else{
+		$shop_listing_sidebar = theme_get_setting('shop_listing_sidebar', 'epros');
+		if(isset($shop_listing_sidebar) && !empty($shop_listing_sidebar)){
+			$variables['shop_listing_sidebar'] = $shop_listing_sidebar;
+		}else{
+			$variables['shop_listing_sidebar'] = 'right';
+		}
+	}
+	///
+
+	///shop_product_demo
+	if(!empty(theme_get_setting('shop_product_demo', 'epros'))){
+		$shop_product_demo = theme_get_setting('shop_product_demo', 'epros');
+	}else{
+		$shop_product_demo = FALSE;
+	}
+	//print $_GET['product_layout'];
+	if($shop_product_demo == TRUE){
+		if(isset($_REQUEST['product_layout']) && !empty($_REQUEST['product_layout'])){
+
+			if($_REQUEST['product_layout'] == 'layout2'){
+				$variables['product_layout'] = 'layout2';
+			}elseif($_REQUEST['product_layout'] == 'layout3'){
+				$variables['product_layout'] = 'layout3';
+			}elseif($_REQUEST['product_layout'] == 'layout4'){
+				$variables['product_layout'] = 'layout4';
+			}else{
+				$variables['product_layout'] = 'layout1';
+			}
+		}else{
+			$product_layout = theme_get_setting('product_layout', 'epros');
+			if(isset($product_layout) && !empty($product_layout)){
+				$variables['product_layout'] = $product_layout;
+			}else{
+				$variables['product_layout'] = 'layout1';
+			}
+		}
+	}else{
+		$product_layout = theme_get_setting('product_layout', 'epros');
+		if(isset($product_layout) && !empty($product_layout)){
+			$variables['product_layout'] = $product_layout;
+		}else{
+			$variables['product_layout'] = 'layout1';
+		}
+	
+	}
+	///
+	$contact_layout = theme_get_setting('contact_layout', 'epros');
+	if(isset($contact_layout) && !empty($contact_layout)){
+		$variables['contact_layout'] = $contact_layout;
+	}else{
+		$variables['contact_layout'] = 'contact_layout_1';
+	}
+	///contact_layout_demo
+	if(!empty(theme_get_setting('contact_layout_demo', 'epros'))){
+		$contact_layout_demo = theme_get_setting('contact_layout_demo', 'epros');
+	}else{
+		$contact_layout_demo = FALSE;
+	}
+
+	if($contact_layout_demo == TRUE){
+		if(isset($_GET['contact_layout']) && !empty($_GET['contact_layout'])){
+			if($_GET['contact_layout'] == 'contact_layout_1'){
+				$variables['contact_layout'] = 'contact_layout_1';
+			}else{
+				$variables['contact_layout'] = 'contact_layout_2';
+			}
+		}else{
+			$contact_layout = theme_get_setting('contact_layout', 'epros');
+			if(isset($contact_layout) && !empty($contact_layout)){
+				$variables['contact_layout'] = $contact_layout;
+			}else{
+				$variables['contact_layout'] = 'contact_layout_1';
+			}
+		}
+	}else{
+		$contact_layout = theme_get_setting('contact_layout', 'epros');
+		if(isset($contact_layout) && !empty($contact_layout)){
+			$variables['contact_layout'] = $contact_layout;
+		}else{
+			$variables['contact_layout'] = 'contact_layout_1';
+		}
+	}
+	///
+	$shop_listing_layout = theme_get_setting('shop_listing_layout', 'epros');
+	if(isset($shop_listing_layout) && !empty($shop_listing_layout)){
+		$variables['shop_listing_layout'] = $shop_listing_layout;
+	}else{
+		$variables['shop_listing_layout'] = 'list';
+	}
+	///shop_listing_demo
+	if(!empty(theme_get_setting('shop_listing_demo', 'epros'))){
+		$shop_listing_demo = theme_get_setting('shop_listing_demo', 'epros');
+	}else{
+		$shop_listing_demo = FALSE;
+	}
+
+	if($shop_listing_demo == TRUE){
+		if(isset($_GET['shop_listing_layout']) && !empty($_GET['shop_listing_layout'])){
+			if($_GET['shop_listing_layout'] == 'grid'){
+				$variables['shop_listing_layout'] = 'grid';
+			}else{
+				$variables['shop_listing_layout'] = 'list';
+			}
+		}else{
+			$shop_listing_layout = theme_get_setting('shop_listing_layout', 'epros');
+			if(isset($shop_listing_layout) && !empty($shop_listing_layout)){
+				$variables['shop_listing_layout'] = $shop_listing_layout;
+			}else{
+				$variables['shop_listing_layout'] = 'list';
+			}
+		}
+	}else{
+		$shop_listing_layout = theme_get_setting('shop_listing_layout', 'epros');
+		if(isset($shop_listing_layout) && !empty($shop_listing_layout)){
+			$variables['shop_listing_layout'] = $shop_listing_layout;
+		}else{
+			$variables['shop_listing_layout'] = 'list';
+		}
+	}
+
+	///
+	if (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.canonical') {
+	  	$term_id = \Drupal::routeMatch()->getRawParameter('taxonomy_term');
+	  	$term = taxonomy_term_load($term_id);
+	  	//$term_name = $term_object->get('name')->value;
+	  	$vname = $term->vid->getValue()[0]['target_id'];
+	  	if($vname == 'blog_categories'){
+	  		$variables['vcname'] = $vname;
+		  	$sidebar = $term->field_default_sidebar->value;
+		  	$layout = $term->field_blog_layout->value;
+		  	$variables['term_layout'] = $layout;
+		  	$variables['term_sidebar'] = $sidebar;
+		}
+		$variables['current_term'] = $term;
+		
+	}
+	if (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.canonical') {
+	  	$term_id = \Drupal::routeMatch()->getRawParameter('taxonomy_term');
+	  	$term = taxonomy_term_load($term_id);
+	  	//$term_name = $term_object->get('name')->value;
+	  	$vname = $term->vid->getValue()[0]['target_id'];
+	  	if($vname == 'blog_categories'){
+	  		$variables['vcname'] = $vname;
+		  	$sidebar = $term->field_default_sidebar->value;
+		  	$layout = $term->field_blog_layout->value;
+		  	$variables['term_layout'] = $layout;
+		  	$variables['term_sidebar'] = $sidebar;
+		}
+		$variables['current_term'] = $term;
+		
+	}
+
+	//!
+	if(isset($_GET['layout']) && !empty($_GET['layout'])){
+		$layout_demo = $_GET['layout'];
+		if($layout_demo == 'standard' || $layout_demo == 'small' || $layout_demo == 'masonry'){
+			$variables['layout_demo'] = $layout_demo;
+		}
+		
+	}
+	$variables['#cache']['contexts'][] = 'url';
+}
+function epros_preprocess_html(&$variables){
+	global $base_url;
+  	$theme = \Drupal::theme()->getActiveTheme()->getName();
+  	$variables['general_setting_tracking_code'] = theme_get_setting('general_setting_tracking_code', $theme);
+  	$variables['custom_css'] = theme_get_setting('custom_css', $theme);
+	$variables['theme_path'] = base_path().drupal_get_path('theme', $theme);
+	$site_name = \Drupal::config('system.site')->get('name');
+	$variables['site_name'] = $site_name;	
+	$variables['header_social_networks'] = theme_get_setting('header_social_networks', $theme);
+	$variables['copyright_text'] = theme_get_setting('copyright_text', $theme);
+	$is_front_page = \Drupal::service('path.matcher')->isFrontPage();
+	$current_path = \Drupal::service('path.current')->getPath();
+	$path_args = explode('/', $current_path);
+
+	if($is_front_page){
+		$variables['#attached']['library'][] = 'epros/epros-lib';
+
+	}elseif(\Drupal::routeMatch()->getParameter('node')){
+ 		$node = \Drupal::routeMatch()->getParameter('node');
+ 		//kint($node->changed->value);
+		$ntype = $node->getType();
+		
+	  	if($ntype == 'blog_post'){
+	  		$variables['#attached']['library'][] = 'epros/blog-lib';
+	  	}
+	  	elseif($ntype == 'product'){
+
+	  		$variables['#attached']['library'][] = 'epros/product-lib';
+	  	}
+	  	elseif($ntype == 'homepage'){
+
+			$h_sty = $node->field_homepage_type->getValue()[0]['value'];
+			if($h_sty == 'fashion'){
+			    $variables['#attached']['library'][] = 'epros/style-1-lib';      
+			}
+			elseif($h_sty == 'interior'){
+			    $variables['#attached']['library'][] = 'epros/style-2-lib';
+			}
+			elseif($h_sty == 'cosmetic'){
+			    $variables['#attached']['library'][] = 'epros/style-3-lib';
+			}
+			elseif($h_sty == 'jewelry'){
+			    $variables['#attached']['library'][] = 'epros/style-4-lib';
+			}
+			elseif($h_sty == 'bakery'){
+			    $variables['#attached']['library'][] = 'epros/style-5-lib';
+			}
+			elseif($h_sty == 'bike'){
+			    $variables['#attached']['library'][] = 'epros/style-6-lib';
+			}
+			elseif($h_sty == 'sunglasses'){
+			    $variables['#attached']['library'][] = 'epros/style-7-lib';
+			}
+			elseif($h_sty == 'electronics'){
+			    $variables['#attached']['library'][] = 'epros/style-8-lib';
+			}
+			else{
+			    $variables['#attached']['library'][] = 'epros/style-9-lib';
+			} 
+
+	  	}
+	  	elseif($ntype == 'coming_soon'){
+
+	  		$variables['#attached']['library'][] = 'epros/comingsoon-lib';
+	  	}
+	  	else{
+	  		$variables['#attached']['library'][] = 'epros/basic-lib';
+	  	}
+	}elseif($path_args[1] == 'blog'){
+		$variables['#attached']['library'][] = 'epros/blog-lib';
+
+	}elseif($path_args[1] == 'product'){
+		$variables['#attached']['library'][] = 'epros/product-lib';
+
+	}else{
+		$variables['#attached']['library'][] = 'epros/basic-lib';
+	}
+	///direction_demo
+	if(!empty(theme_get_setting('direction_demo', 'epros'))){
+		$direction_demo = theme_get_setting('direction_demo', 'epros');
+	}else{
+		$direction_demo = FALSE;
+	}
+
+	if($direction_demo == TRUE){
+		if(isset($_GET['direction']) && !empty($_GET['direction'])){
+			if($_GET['direction'] == 'ltr'){
+				$variables['direction'] = 'ltr';
+			}else{
+				$variables['direction'] = 'rtl';
+			}
+		}else{
+			$direction = theme_get_setting('direction', 'epros');
+			if(isset($direction) && !empty($direction)){
+				$variables['direction'] = $direction;
+			}else{
+				$variables['direction'] = 'ltr';
+			}
+		}
+	}else{
+		$direction = theme_get_setting('direction', 'epros');
+		if(isset($direction) && !empty($direction)){
+			$variables['direction'] = $direction;
+		}else{
+			$variables['direction'] = 'ltr';
+		}
+	}
+	///
+	
+}
+function epros_preprocess_field(&$variables){
+	/*if ($node = \Drupal::routeMatch()->getParameter('node')) {
+		$ntype = $node->getType();
+  		if($ntype == 'article'){
+  			$format = $node->field_blog_format[0]->value;
+  			$variables['article_format'] = $format;
+
+  		}
+	}*/
+}
+/**
+ * Implements template_preprocess_page().
+ */
+function epros_preprocess_page(&$variables) {
+
+	/*if (isset($variables['page']['content']['system_main']['default_message'])) {
+  		unset($variables['page']['content']['system_main']['default_message']);
+ 	} */
+	global $base_url;
+	$pageURL = 'http';	
+ 	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
+ 		$pageURL .= "s";
+ 	}
+	$pageURL .= '://';
+ 	if($_SERVER['SERVER_PORT'] != '80'){
+  	$pageURL .= $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
+ 	}else{
+  		$pageURL .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+ 	}
+ 	$variables['pageURL'] = $pageURL;
+
+	$theme = \Drupal::theme()->getActiveTheme()->getName();
+	$variables['theme_path'] = drupal_get_path('theme', $theme);
+	$variables['header_social_networks'] = theme_get_setting('header_social_networks', $theme);
+	$variables['copyright_text'] = theme_get_setting('copyright_text', $theme);
+	//$variables['header_bg'] = theme_get_setting('header_bg', $theme);
+	//print '<script type="text/javascript">jQuery.extend(Drupal.settings, { "pathToTheme": "' .base_path() .drupal_get_path('theme', $theme). '" });</script>';
+	//get site name & slogan
+	$config = \Drupal::config('system.site');
+  	$variables['site_name'] = $config->get('name');
+	$request = \Drupal::request();
+	if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+		$variables['title'] = \Drupal::service('title_resolver')->getTitle($request, $route);
+	}
+	//create link taxonomy term starts
+	//use custom code
+	if (\Drupal::routeMatch()->getParameter('node')) {
+		$node = \Drupal::routeMatch()->getParameter('node');
+		if($node->type->target_id == 'blog_post'){
+
+			$variables['node'] = $node;
+			$n = 0;
+			$term_path = array();
+			$count_cate = count($node->field_category);
+			foreach ($node->field_category as $k => $v) {
+				$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath('/taxonomy/term/'.$v->entity->tid->value);
+				$path_alias_cs = ltrim($path_alias,'/');
+				$n++;
+				if($n < $count_cate){
+		 			$term_path[$k] = '<a href="'.base_path().$path_alias_cs.'">'.$v->entity->name->value.'</a>, ';
+		 		}else{
+		 			$term_path[$k] = '<a href="'.base_path().$path_alias_cs.'">'.$v->entity->name->value.'</a>';
+		 		}
+			}
+			$variables['link_categories'] = $term_path;
+		}else{
+			$variables['node'] = $node;
+		}
+		//view total
+		//statistics_get($nid);
+		$variables['totalcount'] = statistics_get($node->nid->getValue()[0]['value'])['totalcount'];
+		$variables['node'] = $node;
+
+	}
+	//use custom code
+	if (\Drupal::routeMatch()->getParameter('node')) {
+		$node = \Drupal::routeMatch()->getParameter('node');
+		if($node->type->target_id == 'coming_soon'){
+			$str_date = $node->field_date_time->getValue()[0]['value'];
+			$arr_dt = explode('T', $str_date);
+			$date_cs = explode('-', $arr_dt[0]);
+
+			$yyyy = $date_cs[0];
+			$mm = $date_cs[1];
+			$dd = $date_cs[2];
+
+			$time_cs = $arr_dt[1];
+			$variables['cm_yyyy'] = $yyyy;
+			$variables['cm_mm'] = $mm;
+			$variables['cm_dd'] = $dd;
+			$variables['cm_time'] = $time_cs;
+		}
+	
+
+	}
+	///direction_demo
+	if(!empty(theme_get_setting('direction_demo', 'epros'))){
+		$direction_demo = theme_get_setting('direction_demo', 'epros');
+	}else{
+		$direction_demo = FALSE;
+	}
+
+	if($direction_demo == TRUE){
+		if(isset($_GET['direction']) && !empty($_GET['direction'])){
+			if($_GET['direction'] == 'ltr'){
+				$variables['direction'] = 'ltr';
+			}else{
+				$variables['direction'] = 'rtl';
+			}
+		}else{
+			$direction = theme_get_setting('direction', 'epros');
+			if(isset($direction) && !empty($direction)){
+				$variables['direction'] = $direction;
+			}else{
+				$variables['direction'] = 'ltr';
+			}
+		}
+	}else{
+		$direction = theme_get_setting('direction', 'epros');
+		if(isset($direction) && !empty($direction)){
+			$variables['direction'] = $direction;
+		}else{
+			$variables['direction'] = 'ltr';
+		}
+	}
+	///
+	//get current term (tid)
+	$blog_subtitle = theme_get_setting('blog_subtitle', 'epros');
+	if(isset($blog_subtitle) && !empty($blog_subtitle)){
+		$variables['blog_subtitle'] = $blog_subtitle;
+	}else{
+		$variables['blog_subtitle'] = '';
+	}
+	
+	$listing_sidebar = theme_get_setting('blog_sidebar', 'epros');
+	if(isset($listing_sidebar) && !empty($listing_sidebar)){
+		$variables['listing_sidebar'] = $listing_sidebar;
+	}else{
+		$variables['listing_sidebar'] = 'left';
+	}
+	if(!empty(theme_get_setting('blog_page_header_bg', 'epros'))){
+		$variables['blog_page_header_bg'] = $base_url.theme_get_setting('blog_page_header_bg', 'epros');
+	}else{
+		$variables['blog_page_header_bg'] = '';
+	}
+	//blog_tags
+	if(!empty(theme_get_setting('blog_tags_page_header_bg', 'epros'))){
+		$variables['blog_tags_page_header_bg'] = $base_url.theme_get_setting('blog_tags_page_header_bg', 'epros');
+	}else{
+		$variables['blog_tags_page_header_bg'] = '';
+	}
+	//product tags
+	if(!empty(theme_get_setting('product_tags_page_header_bg', 'epros'))){
+		$variables['product_tags_page_header_bg'] = $base_url.theme_get_setting('product_tags_page_header_bg', 'epros');
+	}else{
+		$variables['product_tags_page_header_bg'] = '';
+	}
+	if(!empty(theme_get_setting('shop_page_header_bg', 'epros'))){
+		$variables['shop_page_header_bg'] = $base_url.theme_get_setting('shop_page_header_bg', 'epros');
+	}else{
+		$variables['shop_page_header_bg'] = '';
+	}
+	//cart page
+	if(!empty(theme_get_setting('cart_page_header_bg', 'epros'))){
+		$variables['cart_page_header_bg'] = $base_url.theme_get_setting('cart_page_header_bg', 'epros');
+	}else{
+		$variables['cart_page_header_bg'] = '';
+	}
+	//checkout page
+	if(!empty(theme_get_setting('checkout_page_header_bg', 'epros'))){
+		$variables['checkout_page_header_bg'] = $base_url.theme_get_setting('checkout_page_header_bg', 'epros');
+	}else{
+		$variables['checkout_page_header_bg'] = '';
+	}
+	//review page
+	if(!empty(theme_get_setting('review_page_header_bg', 'epros'))){
+		$variables['review_page_header_bg'] = $base_url.theme_get_setting('review_page_header_bg', 'epros');
+	}else{
+		$variables['review_page_header_bg'] = '';
+	}
+	//complete page
+	if(!empty(theme_get_setting('complete_page_header_bg', 'epros'))){
+		$variables['complete_page_header_bg'] = $base_url.theme_get_setting('complete_page_header_bg', 'epros');
+	}else{
+		$variables['complete_page_header_bg'] = '';
+	}
+	//contact
+	$contact_address = theme_get_setting('contact_address', 'epros');
+	if(isset($contact_address) && !empty($contact_address)){
+		$variables['contact_address'] = $contact_address;
+	}
+	$contact_email = theme_get_setting('contact_email', 'epros');
+	if(isset($contact_email) && !empty($contact_email)){
+		$variables['contact_email'] = $contact_email;
+	}
+	$header_slogan = theme_get_setting('header_slogan', 'epros');
+	if(isset($header_slogan) && !empty($header_slogan)){
+		$variables['header_slogan'] = $header_slogan;
+	}
+	$contact_phone = theme_get_setting('contact_phone', 'epros');
+	if(isset($contact_phone) && !empty($contact_phone)){
+		$variables['contact_phone'] = $contact_phone;
+	}
+	$contact_subtitle = theme_get_setting('contact_subtitle', 'epros');
+	if(isset($contact_subtitle) && !empty($contact_subtitle)){
+		$variables['contact_subtitle'] = $contact_subtitle;
+	}
+	$contact_title = theme_get_setting('contact_title', 'epros');
+	if(isset($contact_title) && !empty($contact_title)){
+		$variables['contact_title'] = $contact_title;
+	}
+	$text = theme_get_setting('text', 'epros');
+	if(isset($text) && !empty($text)){
+		$variables['text'] = $text;
+	}
+	$setting_header = theme_get_setting('header_style', 'epros');
+	if(isset($setting_header) && !empty($setting_header)){
+		$variables['setting_header'] = $setting_header;
+	}else{
+		$variables['setting_header'] = 'style1';
+	}
+	$setting_footer = theme_get_setting('footer_style', 'epros');
+	if(isset($setting_footer) && !empty($setting_footer)){
+		$variables['setting_footer'] = $setting_footer;
+	}else{
+		$variables['setting_footer'] = 'style1';
+	}
+	if(!empty(theme_get_setting('contact_page_header_bg', 'epros'))){
+		$variables['contact_page_header_bg'] = $base_url.theme_get_setting('contact_page_header_bg', 'epros');
+	}else{
+		$variables['contact_page_header_bg'] = '';
+	}
+	if(!empty(theme_get_setting('header_logo_image_bg', 'epros'))){
+		$variables['header_logo_image_bg'] = $base_url.theme_get_setting('header_logo_image_bg', 'epros');
+	}else{
+		$variables['header_logo_image_bg'] = '';
+	}
+	$googlemaps = theme_get_setting('googlemaps', 'epros');
+	if(isset($googlemaps) && !empty($googlemaps)){
+		$variables['googlemaps'] = $googlemaps;
+	}
+	if(!empty(theme_get_setting('other_page_header_bg', 'epros'))){
+		$variables['other_page_header_bg'] = $base_url.theme_get_setting('other_page_header_bg', 'epros');
+	}else{
+		$variables['other_page_header_bg'] = '';
+	}
+	if(!empty(theme_get_setting('footer_image_bg', 'epros'))){
+		$variables['footer_image_bg'] = $base_url.theme_get_setting('footer_image_bg', 'epros');
+	}else{
+		$variables['footer_image_bg'] = '';
+	}
+	if(!empty(theme_get_setting('footer_image_popup_newslester_bg', 'epros'))){
+		$variables['footer_image_popup_newslester_bg'] = $base_url.theme_get_setting('footer_image_popup_newslester_bg', 'epros');
+	}else{
+		$variables['footer_image_popup_newslester_bg'] = '';
+	}
+	
+}
+	
+
+function epros_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  	
+  	if($form_id == 'search_block_form'){
+	  	$form['keys']['#attributes']['placeholder'] = t('Search...');
+	  	$form['actions']['submit']['#value'] = t('');
+	  	//kint($form['key']['#attributes']);
+	  	
+    }
+}
+function epros_preprocess_container(&$variables){
+	$variables['container_type'] = $variables['element']['#type'];
+}
+function epros_preprocess_views_view(&$variables){
+	/*$theme = \Drupal::theme()->getActiveTheme()->getName();
+	if(!empty(theme_get_setting('shop_page_style', 're'))){
+		$variables['shop_page_style'] = theme_get_setting('shop_page_style', 're');
+	}else{
+		$variables['shop_page_style'] = '3cols';
+	}*/
+
+  	//$variables['blog_sidebar'] = theme_get_setting('sidebar', $theme);
+  	//$variables['blog_layout'] = theme_get_setting('layout', $theme);
+}
+function epros_preprocess_views_view_field(&$variables){
+	//$variables['theme_path'] = base_path().drupal_get_path('theme', 're');
+	//kint($variables);
+}
+function epros_form_comment_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+	//$form['#attributes']['class'] = array('comment-form');
+	$form['subject']['widget'][0]['value']['#attributes']['class'] = array('form-control');
+	$form['subject']['widget'][0]['value']['#attributes']['placeholder'] = t('Subject');
+	$form['author']['name']['#attributes']['class'] = array('form-control');
+	$form['author']['name']['#attributes']['placeholder'] = t('Name');
+	$form['comment_body']['widget'][0]['#attributes']['class'] = array('form-control');
+	$form['comment_body']['widget'][0]['#attributes']['placeholder'] = t('Message');
+	unset($form['subject']['widget'][0]['value']['#title']);
+	unset($form['author']['name']['#title']);
+	unset($form['comment_body']['widget'][0]['#title']);
+	unset($form['comment_body']['widget'][0]['#format']);
+	$form['actions']['submit']['#attributes']['class'] = array('btn-black', 'btn', 'submit-btn');
+	$form['actions']['submit']['#attributes']['value'] = t('Submit comment');
+	unset($form['actions']['preview']);
+	//$form['actions']['submit']['#button_type'] = 'button';
+	//$form['button_type'] = 'button';
+	//kint($form);
+}
+function epros_breadcrumb($variables){
+	$request = \Drupal::request();
+	if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+		$current_title = \Drupal::service('title_resolver')->getTitle($request, $route);
+	}
+	$breadcrumb = $variables['breadcrumb'];
+
+  	$output = '';
+  	if (!empty($breadcrumb)) {
+    	foreach ($breadcrumb as $crumb) {
+    		if($crumb['url']){
+    			$output .= '<a href="'.$crumb['url'].'">'.$crumb['text'].'</a>';
+			
+			}else{
+				$output .= $crumb['text'];
+			}
+    		
+    	}
+    	$output .= render($current_title);
+  	}
+  return $output;
+}
+function epros_form_uc_product_add_to_cart_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+	//kint($form);
+	//$form['#attributes']['class'] = array('inline-form');
+	//$form['qty']['#attributes']['class'] = array('form-control');
+	$form['actions']['submit']['#attributes']['class'] = array('theme-btn-1', 'btn' , 'cart-btn');
+	//unset($form['qty']['#title']);
+}
+function epros_form_uc_cart_view_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+	//kint($form);
+	foreach($form['items'] as $k => $v){
+		if(is_numeric($k)){
+			$form['items'][$k]['remove']['#attributes']['class'] = array('theme-btn-1', 'btn small-btn', 'btn-remove-small');
+		}	
+	}
+	//$form['actions']['checkout']['#attributes']['class'] = array('');
+	//unset($form['items']['#footer']);
+	unset($form['actions']['continue_shopping']);
+	$form['actions']['update']['#attributes']['class'] = array('theme-btn', 'btn small-btn', 'btn-filled');
+	$form['actions']['checkout']['checkout']['#attributes']['class'] = array('theme-btn-1', 'btn small-btn');
+	//$form['actions']['checkout']['checkout']['#attributes']['id'] = t('cart-checkout-comets');
+}
+function epros_form_uc_cart_checkout_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+	$form['#attributes']['id'] = t('page-checkout-comets');
+	$form['actions']['continue']['#attributes']['class'] =  array('theme-btn-1', 'btn small-btn');
+	$form['actions']['cancel']['#attributes']['class'] = array('theme-btn', 'btn small-btn', 'btn-filled');
+}
+function epros_preprocess_uc_cart_block(&$vars){
+	global $base_url;
+
+	$arr_image = array();
+	foreach($vars['items'] as $k => $v){
+		$node = node_load($v['nid']);
+    	$fid = $node->uc_product_image->getValue()[0]['target_id'];
+		$uri = file_load($fid)->uri->value;
+		$url = file_create_url($uri);
+		$arr_image[$k] = $url;
+	}
+	
+	if(isset($arr_image) && !empty($arr_image)){
+		$vars['arr_image'] = $arr_image;
+	}else{
+		$vars['arr_image'] = '';
+	}
+	$vars['summary_links']['#links']['view-cart']['attributes']['class'] = array('theme-btn-1', 'btn small-btn');
+	$vars['summary_links']['#links']['checkout']['attributes']['class'] = array('theme-btn', 'btn small-btn', 'pull-right');
+	$str = render($vars['summary_links'])->__toString();
+	$vars['summary_links_cs'] = strip_tags($str,'<a>');
+	
+}
+function epros_form_contact_message_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+	$form['subject']['widget'][0]['value']['#attributes']['class'] = array('form-control', 'mb-30');
+	unset($form['subject']['widget'][0]['value']['#title']);
+	$form['subject']['widget'][0]['value']['#attributes']['placeholder'] = t('Subject');
+	$form['message']['widget'][0]['value']['#attributes']['class'] = array('form-control', 'mb-30');
+	unset($form['message']['widget'][0]['value']['#title']);
+	$form['message']['widget'][0]['value']['#attributes']['placeholder'] = t('Message');
+	$form['message']['widget'][0]['value']['#attributes']['rows'] = t('2');
+	$form['mail']['#attributes']['class'] = array('form-control', 'mb-30');
+	$form['mail']['#attributes']['placeholder'] = t('Your Email');
+	unset($form['mail']['#title']);
+	$form['name']['#attributes']['class'] = array('form-control','mb-30');
+	$form['name']['#attributes']['placeholder'] = t('Your Name');
+	unset($form['name']['#title']);
+	$form['actions']['submit']['#attributes']['class'] = array('btn-black', 'btn', 'submit-btn');
+	unset($form['actions']['preview']);
+}

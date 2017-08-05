@@ -1,0 +1,15 @@
+{% set count_comments = comments|length - 3 %}
+{% if count_comments < 0 %}
+    {% set count_comments = 0 %}
+{% endif %}
+<div class="comment-wrap space-20">
+    <h2 class="section-title size-18 no-margin">{% if count_comments == 1 %}{{ 'COMMENT(' ~ count_comments ~ ')' }}{% else %}{{ 'COMMENTS(' ~ count_comments ~ ')' }}{% endif %}</h4></h2>
+    <ol class="comments clearfix ">
+        {{ comments }}
+    </ol>
+</div>
+
+<div class="comment-form-wrap epros-comment-form">
+    <h2 class="section-title size-18">{{ 'Leave a reply'|t }}</h2>
+    {{ comment_form }}
+</div>

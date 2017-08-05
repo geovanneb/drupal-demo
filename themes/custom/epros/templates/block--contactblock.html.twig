@@ -1,0 +1,15 @@
+<section{{ attributes.addClass('space-top-80') }}>
+    <div class="container theme-container text-center epros-contact-block">
+        <div class="contact-form text-center space-80 row">
+        		{{ title_suffix }}
+        		{% if label %}                       
+                <h2 class="section-title size-30  space-bottom-80">  <span>{{ label }}</span> </h2>
+                {% endif %}
+                <div class="form-group col-sm-12 form-alert"></div>
+                {% if content %}
+		            {{ content }}
+		        {% endif %}
+                
+        </div>
+    </div>
+</section>

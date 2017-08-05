@@ -1,0 +1,180 @@
+{% if setting_header == 'style2' %}
+    {% set header_classes = 'header-style-2' %}
+{% elseif setting_header == 'style3' %}
+    {% set header_classes = 'header-style-3' %}
+{% elseif setting_header == 'style4' %}
+    {% set header_classes = 'header-style-4' %}
+{% elseif setting_header == 'style5' %}
+    {% set header_classes = 'header-style-5' %}
+{% elseif setting_header == 'style6' %}
+    {% set header_classes = 'header-style-6' %}
+{% elseif setting_header == 'style7' %}
+    {% set header_classes = 'header-style-7' %}
+{% elseif setting_header == 'style8' %}
+    {% set header_classes = 'header-style-8' %}
+{% else %}
+    {% set header_classes = '' %}
+{% endif %}
+<main class="wrapper epros-front-header epros-menu-accout {{ header_classes }}"> 
+    <!-- Header -->
+    {% include theme_path ~ "/templates/header/header-1.html.twig" %}
+    <!-- /Header -->
+
+    <!-- CONTENT AREA -->
+
+    <!--Breadcrumb Section Start-->
+    {% if contact_layout == 'contact_layout_1' %}
+        <section class="breadcrumb-bg contact-breadcrumb" style="background-image: url({{ contact_page_header_bg }});">                
+            <div class="theme-container container ">
+                <div class="space-top-30"></div>
+                <div class="site-breadcumb col-md-4 space-80">                        
+                    <h1 class="section-title size-48 no-margin space-bottom-20">{{ title }}</h1> 
+                    <ol class="breadcrumb breadcrumb-menubar">
+                        {{ page.breadcrumbs }}                             
+                    </ol>
+                </div>  
+            </div>
+        </section>
+        <!--Breadcrumb Section End-->
+
+        <section class="wrapper space-100">
+            <div class="theme-container container">
+
+                <!-- Contact Starts -->
+                <div class="row">
+                    {% if contact_phone %}
+                    <div class="col-sm-4 contact-box text-center">
+                        <div class="space-50">
+                            <i class="icon_mobile gray-color size-40"></i>
+                            <b class="title-1 light-black">Phone</b>
+                            {{ contact_phone|t }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if contact_address %}
+                    <div class="col-sm-4 contact-box text-center">
+                        <div class="space-50">
+                            <i class="icon_pin_alt gray-color size-40"></i>
+                            <b class="title-1 light-black">address</b>
+                            {{ contact_address|t }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if contact_email %}
+                    <div class="col-sm-4 contact-box text-center">
+                        <div class="space-50">
+                            <i class="icon_mail_alt gray-color size-40"></i>
+                            <b class="title-1 light-black">email</b>
+                            {{ contact_email|t }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- / Contact Ends -->
+
+                <!-- Contact Form Starts -->
+                <div class="contact-form-wrap text-center space-80 row epros-page-contact">
+                    <h2 class="section-title size-18  space-bottom-15">{{ contact_title|t }}</h2>
+                        {{ page.content_full_bar }}                     
+                        {{ page.content }}
+                </div>
+                <!-- Contact Form Ends -->
+
+                <!-- Map Starts-->
+                <div class="space-bottom-100">
+                    <div class="google-map">
+                        <div id="map-canvas2"></div>
+                    </div>
+                </div>
+                <!-- / Map Ends -->
+
+            </div>
+
+        </section>
+    {% else %}
+        <section class="wrapper">
+            <div class="contact-2">
+                <div class="col-md-6 col-sm-12 space-80">
+                    <!-- Contact Starts -->
+                    <div class="contact-details">
+                        {% if contact_phone %}
+                        <div class="col-sm-4">
+                            <div class="space-50">
+                                <span class="icon_mobile black-color size-40"></span>
+                                <h2 class="section-title  size-18">Phone</h2>
+                                {{ contact_phone|t }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if contact_address %}
+                        <div class="col-sm-4">
+                            <div class="space-50">
+                                <span class="icon_pin_alt black-color size-40"></span>
+                                <h2 class="section-title  size-18">address</h2>
+                                {{ contact_address|t }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if contact_email %}
+                        <div class="col-sm-4">
+                            <div class="space-50">
+                                <span class="icon_mail_alt black-color size-40"></span>
+                                <h2 class="section-title  size-18">email</h2>                                 
+                                {{ contact_email|t }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Contact Form Starts -->
+                        <div class="contact-form-wrap col-sm-12 epros-page-contact-2">
+                            <h2 class="section-title size-18  space-bottom-15">{{ contact_title|t }}</h2>                       
+                            {{ page.content }}
+                        </div>
+                        <!-- Contact Form Ends -->
+                    </div>
+                    <!-- / Contact Ends -->
+
+
+                </div>
+                <div class="col-md-6 col-sm-12 no-padding contact-2-gmap">
+                    <!-- Map Starts-->
+                    <div class="contact-2-map">
+                        <div id="map-canvas">
+                            
+                        </div> 
+                    </div>
+                    <!-- / Map Ends -->
+                </div>
+            </div>
+
+        </section>
+    {% endif %}
+    <!-- / CONTENT AREA -->
+
+    <!-- FOOTER -->
+    {% if setting_footer == 'style2' %}
+        {% include theme_path ~ "/templates/footer/footer-2.html.twig" %}
+    {% elseif setting_footer == 'style3' %}
+        {% include theme_path ~ "/templates/footer/footer-3.html.twig" %}
+    {% elseif setting_footer == 'style4' %}
+        {% include theme_path ~ "/templates/footer/footer-4.html.twig" %}
+    {% elseif setting_footer == 'style5' %}
+        {% include theme_path ~ "/templates/footer/footer-5.html.twig" %}
+    {% elseif setting_footer == 'style6' %}
+        {% include theme_path ~ "/templates/footer/footer-6.html.twig" %}
+    {% elseif setting_footer == 'style7' %}
+        {% include theme_path ~ "/templates/footer/footer-7.html.twig" %}
+    {% elseif setting_footer == 'style8' %}
+        {% include theme_path ~ "/templates/footer/footer-8.html.twig" %}
+    {% elseif setting_footer == 'style9' %}
+        {% include theme_path ~ "/templates/footer/footer-9.html.twig" %}
+    {% elseif setting_footer == 'style10' %}
+        {% include theme_path ~ "/templates/footer/footer-10.html.twig" %}
+    {% else %}
+        {% include theme_path ~ "/templates/footer/footer-1.html.twig" %}
+    {% endif %}
+    <!-- /FOOTER -->
+
+    <div id="to-top" class="to-top"> <i class="arrow_carrot-up"></i> </div>
+
+</main>

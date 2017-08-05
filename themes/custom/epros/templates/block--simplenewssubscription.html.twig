@@ -1,0 +1,15 @@
+{% set classes = ['grid-item', ' text-center'] %}
+<div{{ attributes.addClass(classes) }}>
+    {{ title_suffix }}
+    <div class="box-2 light-bg epros-sec-5 epros-simplenew-fashion">                              
+        <div class="box-content white-bg">
+            {% if label %}
+            <h2 class="no-margin"> <a href="{{ path('<front>') }}" class="title-1 block-inline space-bottom-40"> <span class="theme-color">Fashion</span>Pro </a> </h2>
+            <a href="#" class="section-title">{{ label }}</a>
+            {% endif %}
+                {% if content %}
+                    {{ content }}
+                {% endif %}
+        </div>
+    </div>
+</div>

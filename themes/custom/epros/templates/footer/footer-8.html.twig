@@ -1,0 +1,28 @@
+<footer id="epros-footer-8" class="footer">             
+    <section class="footer-bg">
+        <div class="space-50 footer-widget">
+            <div class="container theme-container">
+                <div class="row">
+                    {{ page.footer_8_column_1 }}
+                    {{ page.footer_8_column_2 }}
+                    {{ page.footer_8_column_3 }}
+                    {{ page.footer_8_column_4 }}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="space-30 copy-rights-bg">
+        <div class="container theme-container">
+            <div class="row">
+                {% if copyright_text %}
+                <div class="col-md-6 col-sm-4">
+                    {{ copyright_text|t }}
+                </div>
+                {% endif %}
+                <div class="col-md-6 col-sm-8">
+                    {{ page.footer_payment }}
+                </div>
+            </div>
+        </div>
+    </section>
+</footer>

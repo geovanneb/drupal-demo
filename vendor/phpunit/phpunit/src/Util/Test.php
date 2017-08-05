@@ -39,9 +39,8 @@ class PHPUnit_Util_Test
     private static $hookMethods = array();
 
     /**
-     * @param PHPUnit_Framework_Test $test
-     * @param bool                   $asString
-     *
+     * @param  PHPUnit_Framework_Test $test
+     * @param  bool                   $asString
      * @return mixed
      */
     public static function describe(PHPUnit_Framework_Test $test, $asString = true)
@@ -66,13 +65,10 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string                                  $className
+     * @param  string                                  $methodName
      * @return array|bool
-     *
      * @throws PHPUnit_Framework_CodeCoverageException
-     *
      * @since  Method available since Release 4.0.0
      */
     public static function getLinesToBeCovered($className, $methodName)
@@ -92,11 +88,9 @@ class PHPUnit_Util_Test
     /**
      * Returns lines of code specified with the @uses annotation.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 4.0.0
      */
     public static function getLinesToBeUsed($className, $methodName)
@@ -105,14 +99,11 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $className
-     * @param string $methodName
-     * @param string $mode
-     *
+     * @param  string                                  $className
+     * @param  string                                  $methodName
+     * @param  string                                  $mode
      * @return array
-     *
      * @throws PHPUnit_Framework_CodeCoverageException
-     *
      * @since  Method available since Release 4.2.0
      */
     private static function getLinesToBeCoveredOrUsed($className, $methodName, $mode)
@@ -171,11 +162,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the requirements for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 3.6.0
      */
     public static function getRequirements($className, $methodName)
@@ -217,11 +206,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the missing requirements for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 4.3.0
      */
     public static function getMissingRequirements($className, $methodName)
@@ -271,11 +258,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the expected exception for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 3.3.6
      */
     public static function getExpectedException($className, $methodName)
@@ -338,13 +323,12 @@ class PHPUnit_Util_Test
      *
      * If the constant is not found the string is used as is to ensure maximum BC.
      *
-     * @param string $message
-     *
+     * @param  string $message
      * @return string
      */
     private static function parseAnnotationContent($message)
     {
-        if (strpos($message, '::') !== false && count(explode('::', $message)) == 2) {
+        if (strpos($message, '::') !== false && count(explode('::', $message) == 2)) {
             if (defined($message)) {
                 $message = constant($message);
             }
@@ -356,29 +340,25 @@ class PHPUnit_Util_Test
     /**
      * Returns the provided data for a method.
      *
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array|Iterator when a data provider is specified and exists
-     *                        null           when no data provider is specified
-     *
+     * @param  string                      $className
+     * @param  string                      $methodName
+     * @return array|Iterator              when a data provider is specified and exists
+     *                                                null           when no data provider is specified
      * @throws PHPUnit_Framework_Exception
-     *
      * @since  Method available since Release 3.2.0
      */
     public static function getProvidedData($className, $methodName)
     {
         $reflector  = new ReflectionMethod($className, $methodName);
         $docComment = $reflector->getDocComment();
+        $data       = null;
 
-        $data = self::getDataFromDataProviderAnnotation($docComment, $className, $methodName);
-
-        if ($data === null) {
-            $data = self::getDataFromTestWithAnnotation($docComment);
+        if ($dataProviderData = self::getDataFromDataProviderAnnotation($docComment, $className, $methodName)) {
+            $data = $dataProviderData;
         }
 
-        if (is_array($data) && empty($data)) {
-            throw new PHPUnit_Framework_SkippedTestError;
+        if ($testWithData = self::getDataFromTestWithAnnotation($docComment)) {
+            $data = $testWithData;
         }
 
         if ($data !== null) {
@@ -404,13 +384,11 @@ class PHPUnit_Util_Test
     /**
      * Returns the provided data for a method.
      *
-     * @param string $docComment
-     * @param string $className
-     * @param string $methodName
-     *
-     * @return array|Iterator when a data provider is specified and exists
-     *                        null           when no data provider is specified
-     *
+     * @param  string                      $docComment
+     * @param  string                      $className
+     * @param  string                      $methodName
+     * @return array|Iterator              when a data provider is specified and exists
+     *                                                null           when no data provider is specified
      * @throws PHPUnit_Framework_Exception
      */
     private static function getDataFromDataProviderAnnotation($docComment, $className, $methodName)
@@ -454,39 +432,24 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $docComment full docComment string
-     *
-     * @return array when @testWith annotation is defined
-     *               null  when @testWith annotation is omitted
-     *
+     * @param  string                      $docComment full docComment string
+     * @return array                       when @testWith annotation is defined
+     *                                                null  when @testWith annotation is omitted
      * @throws PHPUnit_Framework_Exception when @testWith annotation is defined but cannot be parsed
      */
     public static function getDataFromTestWithAnnotation($docComment)
     {
         $docComment = self::cleanUpMultiLineAnnotation($docComment);
-
         if (preg_match(self::REGEX_TEST_WITH, $docComment, $matches, PREG_OFFSET_CAPTURE)) {
             $offset            = strlen($matches[0][0]) + $matches[0][1];
             $annotationContent = substr($docComment, $offset);
             $data              = array();
-
             foreach (explode("\n", $annotationContent) as $candidateRow) {
                 $candidateRow = trim($candidateRow);
-
-                if ($candidateRow[0] !== '[') {
+                $dataSet      = json_decode($candidateRow, true);
+                if (json_last_error() != JSON_ERROR_NONE) {
                     break;
                 }
-
-                $dataSet = json_decode($candidateRow, true);
-
-                if (json_last_error() != JSON_ERROR_NONE) {
-                    $error = function_exists('json_last_error_msg') ? json_last_error_msg() : json_last_error();
-
-                    throw new PHPUnit_Framework_Exception(
-                        'The dataset for the @testWith annotation cannot be parsed: ' . $error
-                    );
-                }
-
                 $data[] = $dataSet;
             }
 
@@ -509,13 +472,10 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string              $className
+     * @param  string              $methodName
      * @return array
-     *
      * @throws ReflectionException
-     *
      * @since  Method available since Release 3.4.0
      */
     public static function parseTestMethodAnnotations($className, $methodName = '')
@@ -542,10 +502,8 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $docblock
-     *
+     * @param  string $docblock
      * @return array
-     *
      * @since  Method available since Release 3.4.0
      */
     private static function parseAnnotations($docblock)
@@ -568,11 +526,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the backup settings for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 3.4.0
      */
     public static function getBackupSettings($className, $methodName)
@@ -594,11 +550,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the dependencies for a test class or method.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 3.4.0
      */
     public static function getDependencies($className, $methodName)
@@ -627,11 +581,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the error handler settings for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return bool
-     *
      * @since  Method available since Release 3.4.0
      */
     public static function getErrorHandlerSettings($className, $methodName)
@@ -646,11 +598,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the groups for a test class or method.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 3.2.0
      */
     public static function getGroups($className, $methodName = '')
@@ -704,11 +654,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the size of the test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return int
-     *
      * @since  Method available since Release 3.6.0
      */
     public static function getSize($className, $methodName)
@@ -735,11 +683,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the tickets for a test class or method.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return array
-     *
      * @since  Method available since Release 3.4.0
      */
     public static function getTickets($className, $methodName)
@@ -765,11 +711,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the process isolation settings for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return bool
-     *
      * @since  Method available since Release 3.4.1
      */
     public static function getProcessIsolationSettings($className, $methodName)
@@ -790,11 +734,9 @@ class PHPUnit_Util_Test
     /**
      * Returns the preserve global state settings for a test.
      *
-     * @param string $className
-     * @param string $methodName
-     *
+     * @param  string $className
+     * @param  string $methodName
      * @return bool
-     *
      * @since  Method available since Release 3.4.0
      */
     public static function getPreserveGlobalStateSettings($className, $methodName)
@@ -807,10 +749,8 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $className
-     *
+     * @param  string $className
      * @return array
-     *
      * @since  Method available since Release 4.0.8
      */
     public static function getHookMethods($className)
@@ -851,7 +791,6 @@ class PHPUnit_Util_Test
 
     /**
      * @return array
-     *
      * @since  Method available since Release 4.0.9
      */
     private static function emptyHookMethodsArray()
@@ -865,12 +804,10 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $className
-     * @param string $methodName
-     * @param string $settingName
-     *
+     * @param  string $className
+     * @param  string $methodName
+     * @param  string $settingName
      * @return bool
-     *
      * @since  Method available since Release 3.4.0
      */
     private static function getBooleanAnnotationSetting($className, $methodName, $settingName)
@@ -902,12 +839,9 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param string $element
-     *
+     * @param  string                                         $element
      * @return array
-     *
      * @throws PHPUnit_Framework_InvalidCoversTargetException
-     *
      * @since  Method available since Release 4.0.0
      */
     private static function resolveElementToReflectionObjects($element)
@@ -916,7 +850,7 @@ class PHPUnit_Util_Test
 
         if (strpos($element, '\\') !== false && function_exists($element)) {
             $codeToCoverList[] = new ReflectionFunction($element);
-        } elseif (strpos($element, '::') !== false) {
+        } else if (strpos($element, '::') !== false) {
             list($className, $methodName) = explode('::', $element);
 
             if (isset($methodName[0]) && $methodName[0] == '<') {
@@ -1022,8 +956,7 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param array $reflectors
-     *
+     * @param  array $reflectors
      * @return array
      */
     private static function resolveReflectionObjectsToLines(array $reflectors)
@@ -1049,10 +982,8 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param ReflectionMethod $method
-     *
+     * @param  ReflectionMethod $method
      * @return bool
-     *
      * @since  Method available since Release 4.0.8
      */
     private static function isBeforeClassMethod(ReflectionMethod $method)
@@ -1061,10 +992,8 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param ReflectionMethod $method
-     *
+     * @param  ReflectionMethod $method
      * @return bool
-     *
      * @since  Method available since Release 4.0.8
      */
     private static function isBeforeMethod(ReflectionMethod $method)
@@ -1073,10 +1002,8 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param ReflectionMethod $method
-     *
+     * @param  ReflectionMethod $method
      * @return bool
-     *
      * @since  Method available since Release 4.0.8
      */
     private static function isAfterClassMethod(ReflectionMethod $method)
@@ -1085,10 +1012,8 @@ class PHPUnit_Util_Test
     }
 
     /**
-     * @param ReflectionMethod $method
-     *
+     * @param  ReflectionMethod $method
      * @return bool
-     *
      * @since  Method available since Release 4.0.8
      */
     private static function isAfterMethod(ReflectionMethod $method)

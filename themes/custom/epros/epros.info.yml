@@ -1,0 +1,63 @@
+name: epros
+type: theme
+description: 'Epros is a leading of A-grade commercial, industrial and residential projects in USA'
+core: 8.x
+screenshot: screenshot.png
+
+stylesheets-remove:
+  - core/themes/stable/css/views/views.module.css
+  - core/themes/stable/css/system/components/align.module.css
+  - core/assets/vendor/normalize-css/normalize.css
+  - core/modules/system/css/system.module.css
+  - core/modules/system/css/system.theme.css
+  - core/modules/views/css/views.module.css
+
+regions:
+  search: 'Header search'
+  search_2: 'Header search 2'
+  header_cart: 'Header cart'
+  header: 'Header'  
+  top_menu: 'Top menu'
+  main_menu: 'Main menu'
+  section_main_menu: 'Section main menu'
+  menu_left: 'Menu left'
+  menu_right: 'Menu right'
+  menu_taxonomy: 'Menu Taxonomy'
+  breadcrumbs: 'Breadcrumbs'
+  slider: 'Slider'
+  testimonial_slider: 'Testimonial slider'
+  content_full_bar: 'Content full bar'
+  content: 'Main content'
+  sidebar: 'Sidebar'
+  shop_sidebar: 'Shop sidebar'
+  shop_sidebar_single_product: 'Shop sidebar single product'
+  section: 'Section content'
+  section_homepage: 'Section hompage'
+  section_homepage_404: 'Section hompage 404'
+  bottom_project: 'Bottom project'
+  footer_contact: 'Footer contact'
+  footer_4_column_1: 'Footer 4 column 1'
+  footer_4_column_2: 'Footer 4 column 2'
+  footer_4_column_3: 'Footer 4 column 3'
+  footer_4_column_4: 'Footer 4 column 4'
+  footer_5_column_1: 'Footer 5 column 1'
+  footer_5_column_2: 'Footer 5 column 2'
+  footer_5_column_3: 'Footer 5 column 3'
+  footer_6_column_1: 'Footer 6 column 1'
+  footer_6_column_2: 'Footer 6 column 2'
+  footer_6_column_3: 'Footer 6 column 3'
+  footer_7_column_1: 'Footer 7 column 1'
+  footer_7_column_2: 'Footer 7 column 2'
+  footer_7_column_3: 'Footer 7 column 3'
+  footer_8_column_1: 'Footer 8 column 1'
+  footer_8_column_2: 'Footer 8 column 2'
+  footer_8_column_3: 'Footer 8 column 3'
+  footer_8_column_4: 'Footer 8 column 4'
+  footer_9_column_1: 'Footer 9 column 1'
+  footer_9_column_2: 'Footer 9 column 2'
+  footer_9_column_3: 'Footer 9 column 3'
+  footer_social_bar: 'Footer social bar'
+  footer_social_bar_1: 'Footer social bar 1'
+  footer_social_bar_2: 'Footer social bar 2'
+  footer_payment: 'Footer payment'
+  footer_bottom: 'Footer bottom'

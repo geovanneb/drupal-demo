@@ -215,10 +215,6 @@ class XmlDumper extends Dumper
             $service->appendChild($autowiringType);
         }
 
-        if ($definition->isAbstract()) {
-            $service->setAttribute('abstract', 'true');
-        }
-
         if ($callable = $definition->getConfigurator()) {
             $configurator = $this->document->createElement('configurator');
 
@@ -290,7 +286,7 @@ class XmlDumper extends Dumper
      * @param \DOMElement $parent
      * @param string      $keyAttribute
      */
-    private function convertParameters(array $parameters, $type, \DOMElement $parent, $keyAttribute = 'key')
+    private function convertParameters($parameters, $type, \DOMElement $parent, $keyAttribute = 'key')
     {
         $withKeys = array_keys($parameters) !== range(0, count($parameters) - 1);
         foreach ($parameters as $key => $value) {
@@ -339,7 +335,7 @@ class XmlDumper extends Dumper
      *
      * @return array
      */
-    private function escape(array $arguments)
+    private function escape($arguments)
     {
         $args = array();
         foreach ($arguments as $k => $v) {

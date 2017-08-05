@@ -1,0 +1,15 @@
+{% set classes = ['container', 'theme-container', 'text-center', 'epros-simplenewssubs'] %}
+<div{{ attributes.addClass(classes) }}>
+    {{ title_suffix }}
+    <div class="title-wrap space-bottom-50">
+        {% if label %}
+            <h2 class="section-title">{{ label }}</h2>
+        {% endif %}
+        <p> Sign up for our Newsletter ! </p>
+    </div>
+
+        {% if content %}
+            {{ content }}
+        {% endif %}
+
+</div>

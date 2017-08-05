@@ -1,0 +1,120 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a shopping cart block.
+ *
+ * Available variables:
+ * - items: An associative array of cart item information containing:
+ *   - qty: Quantity in cart.
+ *   - title: Item title.
+ *   - price: Item price.
+ *   - desc: (optional) Item description.
+ * - item_count: The number of items in the shopping cart.
+ * - total: The formatted subtotal of all the products in the shopping cart.
+ * - summary_links: A set of links used in the cart summary.
+ * - attributes: HTML attributes for the main content element.
+ *
+ * @see template_preprocess_uc_cart_block()
+ *
+ * @ingroup themeable
+#}
+ {#<div class="cart">
+  <a href="#">
+    <i class="ti-bag"></i><span class="cart-number">2</span>
+  </a>
+  <div class="shopping-cart">
+    <div class="shopping-cart-info">
+      <div class="row">
+        <div class="col-xs-6">
+          <h6 class="upper">Your Cart</h6>
+        </div>
+        <div class="col-xs-6 text-right">
+          <h6 class="upper">$399.99</h6>
+        </div>
+      </div>
+      <!-- end of row-->
+    </div>
+    <ul class="nav product-list">
+      <li>
+        <div class="product-thumbnail">
+          <img src="images/shop/2.jpg" alt="">
+        </div>
+        <div class="product-summary">
+          <a href="#">Premium Suit Blazer</a><span>$199.99</span>
+        </div>
+      </li>
+      <li>
+        <div class="product-thumbnail">
+          <img src="images/shop/5.jpg" alt="">
+        </div>
+        <div class="product-summary">
+          <a href="#">Reiss Vara Tailored Blazer</a><span>$199.99</span>
+        </div>
+      </li>
+    </ul>
+    <p><a href="#" class="btn btn-color btn-block btn-sm">Checkout</a>
+    </p>
+  </div>
+</div>
+<tr>
+<td class="cart-block-item-qty">{{ item.qty }} ×</td>
+{% if item.desc %}
+  <td class="cart-block-item-title">{{ item.title }}<br />
+  <span class="cart-block-item-desc">{{ item.desc }}</span></td>
+{% else %}
+  <td class="cart-block-item-title">{{ item.title }}</td>
+{% endif %}
+<td class="cart-block-item-price">{{ item.price }}</td>
+</tr>#}
+  
+ <a href="#" class="cart-icon size-24"> <span class="items-count font-2"> <b>{{ item_count }}</b> </span> </a>
+    {% if items %}
+      <ul class="pop-up-box cart-popup">
+          {% for key, item in items %}
+            {% for k, image in arr_image %}
+              {% if key == k %}
+              <li class="cart-list">
+                  <div class="cart-img epro-img-cart-form"> <img src="{{ image }}" alt="product"> </div>
+                  <div class="cart-title">
+                      <div class="font-2 size-12" >{{ item.title }}</div>
+                      <p class="caption-text font-3"> 
+                          <span class="size-14 black-color">{{ item.price }}</span>
+                      </p>
+                  </div>
+              </li>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+          <li class="cart-list font-3 sub-total">
+              <div class=""> 
+                  <b class="black-color">Sub Total</b>
+              </div>
+              <div class="pull-right"> 
+                  <span class="theme-color size-18">{{ total }}</span>
+              </div>
+          </li>
+          <li class="cart-list buttons"> 
+                {% if items %}
+                  {{ summary_links_cs|t }}
+                {% endif %}
+          </li>
+      </ul>
+    {% endif %}
+{#<table class="cart-block-summary">
+  <tr>
+    <td class="cart-block-summary-items">
+      {% trans %}
+        <span class="num-items">1</span> Item
+      {% plural item_count %}
+        <span class="num-items">{{ item_count }}</span> Items
+      {% endtrans %}
+    </td>
+    <td class="cart-block-summary-total">
+      <strong>{{ 'Total'|t }}:</strong> {{ total }}
+    </td>
+  </tr>
+</table>
+
+{% if items %}
+  {{ summary_links }}
+{% endif %}#}

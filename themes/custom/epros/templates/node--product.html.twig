@@ -1,0 +1,734 @@
+{% set product_style = node.field_product_belongs.0.value %}
+{% if page %}
+    {% if product_layout == 'layout1' %}
+            <div class="row">
+                <!-- Single Products Slider Starts --> 
+                <div class="col-md-4 col-sm-8 col-sm-offset-2 prod-slider-wrap">                                    
+                    <div class="owl-carousel prod-slider sync1">
+                        {% for image in node.uc_product_image %}
+                            {% set image_product_url = getUrlByImageStyle(image.entity.uri.value, 'image_370x495') %}
+                            {% set image_product_original = file_url(image.entity.uri.value) %}
+                            <div class="item"> 
+                                <img src="{{ image_product_url }}" alt="{{ node.getTitle() }}">
+                                <a href="{{ image_product_original }}" data-gal="prettyPhoto[prettyPhoto]" title="{{ title }}" class="caption-link"><i class="arrow_expand"></i></a>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div  class="owl-carousel sync2">
+                        {% for image in node.uc_product_image %}
+                            {% set image_product_url_thumbnail = getUrlByImageStyle(image.entity.uri.value, 'image_75x105') %}
+                            <div class="item"> <img src="{{ image_product_url_thumbnail }}" alt="{{ title }}"> </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Single Products Slider Ends --> 
+
+                <div class="space-40 inline-block visible-sm visible-xs"></div>
+
+                <!-- Products Description Starts --> 
+                <div class="col-md-8">
+                    <div class="product-content">
+                        <div class="product-heading">
+                            <h2 class="product-title">{{ title }}</h2>                                              
+                        </div>
+                        <div class="product-price font-3">
+                            <p class="caption-text">
+                                <span class="size-30 black-color">{{ content.price }}</span>
+                                <del class="gray-color size-24">  </del>
+                            </p>
+                        </div>
+
+                        <hr class="fullwidth-divider">   
+
+                        <div class="product-description space-bottom-15 size-13">
+                            {{ content.field_short_description }}
+                        </div>
+
+                        <hr class="fullwidth-divider">   
+                        <div class="prod-btns space-top-20">
+                            <div class="add-to-cart product-cart">
+                                {{ content.add_to_cart }}                                 
+                            </div>                                    
+                        </div>
+
+                        <div class="prod-code upper-text space-top-40">
+                            <p> <span class="font-2 gray-color">SKU : </span> <b class="black-color">{{ content.model }}</b> </p>
+                            <div class="prod-social"> 
+                                <span class="font-2 gray-color">{{ 'Share :'|t }}</span>
+                                <ul class="list-items">
+                                    <li><a onClick="window.open('http://www.facebook.com/sharer.php?u={{ pageURL }}','Facebook','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://www.facebook.com/sharer.php?u={{ pageURL }}"><i class="social_facebook"></i></a></li>
+                                    <li><a onClick="window.open('http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}','Twitter share','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}"><i class="social_twitter"></i></a></li>
+                                    <li><a onClick="window.open('https://plus.google.com/share?url={{ pageURL }}','Google plus','width=585,height=666,left='+(screen.availWidth/2-292)+',top='+(screen.availHeight/2-333)+''); return false;" href="https://plus.google.com/share?url={{ pageURL }}" target="_blank" class="google-plus"><i class="social_googleplus"></i></a></li>
+                                    <li><a onClick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}','Linkedin','width=863,height=500,left='+(screen.availWidth/2-431)+',top='+(screen.availHeight/2-250)+''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}"><i class="social_linkedin"></i></a></li>
+                                    <li><a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());" target="_blank" class="pinterest"><i class="social_pinterest"></i></a></li>
+                                </ul> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Products Description Starts --> 
+            </div>
+
+            <!-- Products Description Tabination Starts -->  
+            <div class="tabs-wrap  space-top-70">
+                <div class="tabs  text-center size-16 space-15">
+                    <ul id="tabs" class="nav font-2 upper-text prod-tabs">
+                        {% if content.field_title_tab_1 or content.field_content_tab_1 %}                                         
+                            <li class="active"><a href="#prod-tab-1" data-toggle="tab">{{ content.field_title_tab_1 }}</a></li>
+                        {% endif %}
+                        {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                            <li class=""><a href="#prod-tab-3" data-toggle="tab">{{ content.field_title_tab_2 }}</a></li>
+                        {% endif %}
+                        {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                            <li class=""><a href="#prod-tab-4" data-toggle="tab">{{ content.field_title_tab_3 }}</a></li>
+                        {% endif %}
+                        {% if content.field_title_tab_4 or content.field_content_tab_4 %}
+                            <li class=""><a href="#prod-tab-5" data-toggle="tab">{{ content.field_title_tab_4 }}</a></li>
+                        {% endif %}
+                        {% if content.field_title_tab_5 or content.field_content_tab_5 %}
+                            <li class=""><a href="#prod-tab-6" data-toggle="tab">{{ content.field_title_tab_5 }}</a></li>
+                        {% endif %}                                
+                    </ul>
+                </div>
+                <div class="tab-content prod-tab-content space-20">
+                    {% if content.field_title_tab_1 or content.field_content_tab_1 %}
+                        <div id="prod-tab-1" class="tab-pane fade in active">
+                            {{ content.field_content_tab_1 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                        <div id="prod-tab-3" class="tab-pane fade">
+                            {{ content.field_content_tab_2 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                        <div id="prod-tab-4" class="tab-pane fade">
+                            {{ content.field_content_tab_3 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_4 or content.field_content_tab_4 %}
+                        <div id="prod-tab-5" class="tab-pane fade">
+                            {{ content.field_content_tab_4 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_5 or content.field_content_tab_5 %}
+                        <div id="prod-tab-6" class="tab-pane fade">
+                            {{ content.field_content_tab_5 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            <!-- Products Description Tabination Ends -->  
+
+            <!-- Related Products Starts-->               
+            <div id="product" class="space-50 text-center">
+                <h2 class="section-title space-bottom-40">{{ 'related product'|t }}</h2> 
+                <div class="relative-div row">                           
+                    <div class="related-prod-slider space-bottom-30">
+                        <!-- Slides -->
+                        {% if product_style == 'fashion' %}
+                            {% for related_product_fashion in related_products_fashion %}
+                                {{ related_product_fashion|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'interior' %}
+                            {% for related_product_interior in related_products_interior %}
+                                {{ related_product_interior|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'cosmetic' %}
+                            {% for related_product_cosmetic in related_products_cosmetic %}
+                                {{ related_product_cosmetic|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'bakery' %}
+                            {% for related_product_bakery in related_products_bakery %}
+                                {{ related_product_bakery|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'bike' %}
+                            {% for related_product_bike in related_products_bike %}
+                                {{ related_product_bike|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'sunglasses' %}
+                            {% for related_product_sunglasses in related_products_sunglasses %}
+                                {{ related_product_sunglasses|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'electronics' %}
+                            {% for related_product_electronics in related_products_electronics %}
+                                {{ related_product_electronics|t }}
+                            {% endfor %}
+                        {% else %}
+                            {% for related_product_barber in related_products_barber %}
+                                {{ related_product_barber|t }}
+                            {% endfor %}
+                        {% endif %} 
+                    </div>                            
+                </div>
+            </div>                
+            <!-- / Related Product Ends -->
+    {% elseif product_layout == 'layout2' %}
+        <div class="row">
+            <!-- Single Products Slider Starts --> 
+            <div class="col-md-6">                                  
+                <!-- Main Slider Start -->
+                <section id="prod-slider-2" class="carousel slide main-slider prod-slider-2">  
+                    <!--Carousel Slide Button Start-->
+                    <div class="col-md-10 col-sm-8 col-sm-offset-1 col-md-offset-0 slider-img">
+                        <div class="carousel-inner product-fullwidth light-bg slider">
+                        {% for i, image in node.uc_product_image %}
+
+                            {% set image_product_url = getUrlByImageStyle(image.entity.uri.value, 'image_470x600') %}
+                            {% set image_product_original = file_url(image.entity.uri.value) %}
+                            {% if i == 0 %}
+                             <div class="item active">  
+                                <img src="{{ image_product_url }}" alt="{{ title }}">
+                                <a href="{{ image_product_original }}" data-gal="prettyPhoto[prettyPhoto]" title="{{ title }}" class="caption-link"><i class="arrow_expand"></i></a>
+                            </div>     
+                            
+                            {% else %}
+                             <div class="item">  
+                                <img src="{{ image_product_url }}" alt="{{ title }}">
+                                <a href="{{ image_product_original }}" data-gal="prettyPhoto[prettyPhoto]" title="{{ title }}" class="caption-link"><i class="arrow_expand"></i></a>
+                            </div>     
+                            {% endif %}  
+                            {% endfor %}   
+                        </div>
+                    </div>
+                    <div class="slider-pagination col-md-2 col-sm-2 no-padding">                
+                        <ul class="product-thumbnails">
+                            {% for i, image in node.uc_product_image %}
+                            {% set image_product_url_thumbnail = getUrlByImageStyle(image.entity.uri.value, 'image_100x135') %}
+                            {% if i == 0 %}
+                                <li class="active" data-slide-to="{{ i }}" data-target="#prod-slider-2">
+                                    <a href="#"><img class="img-responsive" alt="{{ title }}" src="{{ image_product_url_thumbnail }}"></a></li>
+                            {% else %}
+                                <li data-slide-to="{{ i }}" data-target="#prod-slider-2">
+                                    <a href="#"><img class="img-responsive" alt="{{ title }}" src="{{ image_product_url_thumbnail }}"></a></li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>  
+                    </div>   
+                </section>
+                <!-- / Main Slider Ends -->                                      
+            </div>
+            <!-- Single Products Slider Ends --> 
+
+            <div class="space-40 clearfix visible-sm visible-xs"></div>
+
+            <!-- Products Description Starts --> 
+            <div class="col-md-6">
+                <div class="product-content content-style-2">
+                    <div class="product-heading">
+                        <h2 class="product-title">{{ title }}</h2>                                              
+                    </div>
+                    <div class="product-price font-3">
+                        <p class="caption-text">
+                            <span class="size-30 black-color">{{ content.price }}</span>
+                            <del class="gray-color size-24">  </del>
+                        </p>
+                    </div>
+
+                    <div class="tabs-wrap  space-top-7">
+                        <div class="tab">
+                            <ul id="tabs" class="nav font-2 upper-text prod-tabs">                                         
+                                {% if content.field_title_tab_1 or content.field_content_tab_1 %}                                         
+                                <li class="active"><a href="#prod-tab-1" data-toggle="tab">{{ content.field_title_tab_1 }}</a></li>
+                                {% endif %}
+                                {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                                    <li class=""><a href="#prod-tab-3" data-toggle="tab">{{ content.field_title_tab_2 }}</a></li>
+                                {% endif %}
+                                {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                                    <li class=""><a href="#prod-tab-4" data-toggle="tab">{{ content.field_title_tab_3 }}</a></li>
+                                {% endif %}
+                                </ul>
+                        </div>
+                        <div class="tab-content prod-tab-content space-top-20">
+                            {% if content.field_title_tab_1 or content.field_content_tab_1 %}
+                                <div id="prod-tab-1" class="tab-pane fade in active">
+                                    {{ content.field_content_tab_1 }}
+                                </div>
+                            {% endif %}
+                            {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                                <div id="prod-tab-3" class="tab-pane fade">
+                                    {{ content.field_content_tab_2 }}
+                                </div>
+                            {% endif %}
+                            {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                                <div id="prod-tab-4" class="tab-pane fade">
+                                    {{ content.field_content_tab_3 }}
+                                </div>
+                            {% endif %}                                       
+                        </div>
+
+                    </div>
+
+                    <hr class="fullwidth-divider">   
+
+                    <div class="prod-btns space-top-20">
+                        <div class="add-to-cart product-cart">
+                            {{ content.add_to_cart }}                                 
+                        </div>                                    
+                    </div>
+
+                    <div class="prod-code upper-text space-top-40">
+                        <p> <span class="font-2 gray-color">SKU : </span> <b class="black-color">{{ content.model }}</b> </p>
+                        <div class="prod-social"> 
+                            <span class="font-2 gray-color">{{ 'Share :'|t }}</span>
+                            <ul class="list-items">
+                                <li><a onClick="window.open('http://www.facebook.com/sharer.php?u={{ pageURL }}','Facebook','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://www.facebook.com/sharer.php?u={{ pageURL }}"><i class="social_facebook"></i></a></li>
+                                <li><a onClick="window.open('http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}','Twitter share','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}"><i class="social_twitter"></i></a></li>
+                                <li><a onClick="window.open('https://plus.google.com/share?url={{ pageURL }}','Google plus','width=585,height=666,left='+(screen.availWidth/2-292)+',top='+(screen.availHeight/2-333)+''); return false;" href="https://plus.google.com/share?url={{ pageURL }}" target="_blank" class="google-plus"><i class="social_googleplus"></i></a></li>
+                                <li><a onClick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}','Linkedin','width=863,height=500,left='+(screen.availWidth/2-431)+',top='+(screen.availHeight/2-250)+''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}"><i class="social_linkedin"></i></a></li>
+                                <li><a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());" target="_blank" class="pinterest"><i class="social_pinterest"></i></a></li>
+                            </ul> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Products Description Ends -->                         
+        </div>
+
+        <div class="space-top-70"></div>
+
+        <!-- Products Description Tabination Starts -->
+        <div class="product-description text-center space-30 des-2">                        
+            <h2 class="section-title space-bottom-30 size-18"> Product Description </h2> 
+                {{ content.field_product_description }}                        
+        </div>
+        <!-- Products Description Tabination Ends -->
+
+        <!-- Related Products Starts-->     
+        <div id="product" class="space-50 text-center">
+            <h2 class="section-title space-bottom-40 size-18">{{ 'related product'|t }}</h2> 
+            <div class="relative-div row">                           
+                <div class="related-prod-slider space-bottom-30">
+                    <!-- Slides -->
+                    {% if product_style == 'fashion' %}
+                        {% for related_product_fashion in related_products_fashion %}
+                            {{ related_product_fashion|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'interior' %}
+                        {% for related_product_interior in related_products_interior %}
+                            {{ related_product_interior|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'cosmetic' %}
+                        {% for related_product_cosmetic in related_products_cosmetic %}
+                            {{ related_product_cosmetic|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'bakery' %}
+                        {% for related_product_bakery in related_products_bakery %}
+                            {{ related_product_bakery|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'bike' %}
+                        {% for related_product_bike in related_products_bike %}
+                            {{ related_product_bike|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'sunglasses' %}
+                        {% for related_product_sunglasses in related_products_sunglasses %}
+                            {{ related_product_sunglasses|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'electronics' %}
+                        {% for related_product_electronics in related_products_electronics %}
+                            {{ related_product_electronics|t }}
+                        {% endfor %}
+                    {% else %}
+                        {% for related_product_barber in related_products_barber %}
+                            {{ related_product_barber|t }}
+                        {% endfor %}
+                    {% endif %} 
+                </div>                          
+            </div>
+        </div>          
+        <!-- / Related Product Ends -->
+    {% elseif product_layout == 'layout3' %}
+        <div class="light-bg">
+            <div class="theme-container container">
+                <div class="row">
+                    <!-- Single Product Starts -->
+
+                    <!-- Single Products Slider Starts --> 
+                    <div class="col-md-6 prod-slider-wrap prod-slider-style">                                    
+                        <div class="owl-carousel prod-slider style-5 sync1">
+                            {% for image in node.uc_product_image %}
+                            {% set image_product_url = getUrlByImageStyle(image.entity.uri.value, 'image_625x835') %}
+                            {% set image_product_original = file_url(image.entity.uri.value) %}
+                            <div class="item"> 
+                                <img src="{{ image_product_url }}" alt="{{ title }}">
+                                <a href="{{ image_product_original }}" data-gal="prettyPhoto[prettyPhoto]" title="{{ title }}" class="caption-link"><i class="arrow_expand"></i></a>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div  class="owl-carousel style-5 sync2">
+                            {% for image in node.uc_product_image %}
+                            {% set image_product_url_thumbnail = getUrlByImageStyle(image.entity.uri.value, 'image_75x105') %}
+                                <div class="item"> <img src="{{ image_product_url_thumbnail }}" alt="{{ title }}"> </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- Single Products Slider Ends --> 
+
+                    <!-- Products Description Starts --> 
+                    <div class="col-md-5 col-md-offset-1 space-70">
+                        <div class="product-content">
+                            <div class="product-heading">
+                                <h2 class="product-title">{{ title }}</h2>                                              
+                            </div>
+                            <div class="product-price font-3">
+                                <p class="caption-text">
+                                    <span class="size-30 black-color">{{ content.price }}</span>
+                                    <del class="gray-color size-24">  </del>
+                                </p>
+                            </div>
+                            <hr class="fullwidth-divider">   
+
+                            <div class="product-description space-bottom-15 size-13">
+                               {{ content.field_short_description }}                                        
+                            </div>
+
+                            <hr class="fullwidth-divider">   
+                            <div class="prod-btns space-top-20">
+                                <div class="add-to-cart product-cart">
+                                    {{ content.add_to_cart }}                                 
+                                </div>                                    
+                            </div>
+
+                            <div class="prod-code upper-text space-top-40">
+                                <p> <span class="font-2 gray-color">SKU : </span> <b class="black-color">{{ content.model }}</b> </p>
+                                <div class="prod-social"> 
+                                    <span class="font-2 gray-color">{{ 'Share :'|t }}</span>
+                                    <ul class="list-items">
+                                        <li><a onClick="window.open('http://www.facebook.com/sharer.php?u={{ pageURL }}','Facebook','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://www.facebook.com/sharer.php?u={{ pageURL }}"><i class="social_facebook"></i></a></li>
+                                        <li><a onClick="window.open('http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}','Twitter share','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}"><i class="social_twitter"></i></a></li>
+                                        <li><a onClick="window.open('https://plus.google.com/share?url={{ pageURL }}','Google plus','width=585,height=666,left='+(screen.availWidth/2-292)+',top='+(screen.availHeight/2-333)+''); return false;" href="https://plus.google.com/share?url={{ pageURL }}" target="_blank" class="google-plus"><i class="social_googleplus"></i></a></li>
+                                        <li><a onClick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}','Linkedin','width=863,height=500,left='+(screen.availWidth/2-431)+',top='+(screen.availHeight/2-250)+''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}"><i class="social_linkedin"></i></a></li>
+                                        <li><a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());" target="_blank" class="pinterest"><i class="social_pinterest"></i></a></li>
+                                    </ul> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Products Description Starts --> 
+
+                    <!-- / Single Product Ends -->          
+                </div>
+            </div>
+        </div>
+        <div class="theme-container container">
+            <!-- Products Description Tabination Starts -->  
+            <div class="tabs-wrap tabs-style-2 space-bottom-30 space-top-70 row">
+                <div class="col-md-4 col-sm-4">
+                    <div class="tabs size-14">
+                        <ul id="tabs" class="nav font-2 upper-text prod-tabs">                                         
+                           {% if content.field_title_tab_1 or content.field_content_tab_1 %}                                         
+                            <li class="active"><a href="#prod-tab-1" data-toggle="tab">{{ content.field_title_tab_1 }}</a></li>
+                            {% endif %}
+                            {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                                <li class=""><a href="#prod-tab-3" data-toggle="tab">{{ content.field_title_tab_2 }}</a></li>
+                            {% endif %}
+                            {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                                <li class=""><a href="#prod-tab-4" data-toggle="tab">{{ content.field_title_tab_3 }}</a></li>
+                            {% endif %}
+                            {% if content.field_title_tab_4 or content.field_content_tab_4 %}
+                                <li class=""><a href="#prod-tab-5" data-toggle="tab">{{ content.field_title_tab_4 }}</a></li>
+                            {% endif %}
+                            {% if content.field_title_tab_5 or content.field_content_tab_5 %}
+                                <li class=""><a href="#prod-tab-6" data-toggle="tab">{{ content.field_title_tab_5 }}</a></li>
+                            {% endif %}                                                           
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-sm-8 content">
+                    <div class="tab-content prod-tab-content">
+                        {% if content.field_title_tab_1 or content.field_content_tab_1 %}
+                        <div id="prod-tab-1" class="tab-pane fade in active">
+                            {{ content.field_content_tab_1 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                        <div id="prod-tab-3" class="tab-pane fade">
+                            {{ content.field_content_tab_2 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                        <div id="prod-tab-4" class="tab-pane fade">
+                            {{ content.field_content_tab_3 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_4 or content.field_content_tab_4 %}
+                        <div id="prod-tab-5" class="tab-pane fade">
+                            {{ content.field_content_tab_4 }}
+                        </div>
+                    {% endif %}
+                    {% if content.field_title_tab_5 or content.field_content_tab_5 %}
+                        <div id="prod-tab-6" class="tab-pane fade">
+                            {{ content.field_content_tab_5 }}
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Products Description Tabination Ends -->  
+
+            <!-- Related Products Starts-->               
+            <div id="product" class="space-50 text-center">
+                <h2 class="section-title space-bottom-40">{{ 'related product'|t }}</h2> 
+                <div class="relative-div row">                           
+                    <div class="related-prod-slider space-bottom-30">
+                        <!-- Slides -->
+                        {% if product_style == 'fashion' %}
+                            {% for related_product_fashion in related_products_fashion %}
+                                {{ related_product_fashion|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'interior' %}
+                            {% for related_product_interior in related_products_interior %}
+                                {{ related_product_interior|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'cosmetic' %}
+                            {% for related_product_cosmetic in related_products_cosmetic %}
+                                {{ related_product_cosmetic|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'bakery' %}
+                            {% for related_product_bakery in related_products_bakery %}
+                                {{ related_product_bakery|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'bike' %}
+                            {% for related_product_bike in related_products_bike %}
+                                {{ related_product_bike|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'sunglasses' %}
+                            {% for related_product_sunglasses in related_products_sunglasses %}
+                                {{ related_product_sunglasses|t }}
+                            {% endfor %}
+                        {% elseif product_style == 'electronics' %}
+                            {% for related_product_electronics in related_products_electronics %}
+                                {{ related_product_electronics|t }}
+                            {% endfor %}
+                        {% else %}
+                            {% for related_product_barber in related_products_barber %}
+                                {{ related_product_barber|t }}
+                            {% endfor %}
+                        {% endif %} 
+                    </div>                              
+                </div>
+            </div>                
+            <!-- / Related Product Ends -->                              
+        </div>
+    {% else %}
+        <div class="row">
+            <!-- Single Products Slider Starts --> 
+            <div class="col-md-5  prod-slider-wrap">                                    
+                <div class="owl-carousel prod-slider sync1">
+                    {% for image in node.uc_product_image %}
+                        {% set image_product_url = getUrlByImageStyle(image.entity.uri.value, 'image_370x495') %}
+                        {% set image_product_original = file_url(image.entity.uri.value) %}
+                        <div class="item"> 
+                            <img src="{{ image_product_url }}" alt="{{ node.getTitle() }}">
+                            <a href="{{ image_product_original }}" data-gal="prettyPhoto[prettyPhoto]" title="{{ title }}" class="caption-link"><i class="arrow_expand"></i></a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div  class="owl-carousel sync2">
+                    {% for image in node.uc_product_image %}
+                        {% set image_product_url_thumbnail = getUrlByImageStyle(image.entity.uri.value, 'image_75x105') %}
+                        <div class="item"> <img src="{{ image_product_url_thumbnail }}" alt="{{ title }}"> </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Single Products Slider Ends --> 
+
+            <div class="space-40 inline-block visible-sm visible-xs"></div>
+
+            <!-- Products Description Starts --> 
+            <div class="col-md-7">
+                <div class="product-content">
+                    <div class="product-heading">
+                        <h2 class="product-title">{{ title }}</h2>                                              
+                    </div>
+                    <div class="product-price font-3">
+                        <p class="caption-text">
+                            <span class="size-30 black-color">{{ content.price }}</span>
+                            <del class="gray-color size-24">  </del>
+                        </p>
+                    </div>
+                    <hr class="fullwidth-divider">   
+
+                    <div class="product-description space-bottom-15 size-13">
+                        {{ content.field_short_description }}
+                    </div>
+
+                    <hr class="fullwidth-divider">   
+                    <div class="prod-btns space-top-20">
+                        <div class="add-to-cart product-cart">
+                            {{ content.add_to_cart }}                                 
+                        </div>                    
+                    </div>
+
+                    <div class="prod-code upper-text space-top-40">
+                        <p> <span class="font-2 gray-color">SKU : </span> <b class="black-color">{{ content.model }}</b> </p>
+                        <div class="prod-social"> 
+                            <span class="font-2 gray-color">{{ 'Share :'|t }}</span>
+                            <ul class="list-items">
+                                <li><a onClick="window.open('http://www.facebook.com/sharer.php?u={{ pageURL }}','Facebook','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://www.facebook.com/sharer.php?u={{ pageURL }}"><i class="social_facebook"></i></a></li>
+                                <li><a onClick="window.open('http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}','Twitter share','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}"><i class="social_twitter"></i></a></li>
+                                <li><a onClick="window.open('https://plus.google.com/share?url={{ pageURL }}','Google plus','width=585,height=666,left='+(screen.availWidth/2-292)+',top='+(screen.availHeight/2-333)+''); return false;" href="https://plus.google.com/share?url={{ pageURL }}" target="_blank" class="google-plus"><i class="social_googleplus"></i></a></li>
+                                <li><a onClick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}','Linkedin','width=863,height=500,left='+(screen.availWidth/2-431)+',top='+(screen.availHeight/2-250)+''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}"><i class="social_linkedin"></i></a></li>
+                                <li><a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());" target="_blank" class="pinterest"><i class="social_pinterest"></i></a></li>
+                            </ul> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Products Description Starts --> 
+        </div>
+
+        <!-- Products Description Tabination Starts -->  
+        <div class="tabs-wrap  space-top-70">
+            <div class="tabs size-14 space-15">
+                <ul id="tabs" class="nav font-2 upper-text prod-tabs">                                         
+                    {% if content.field_title_tab_1 or content.field_content_tab_1 %}                                         
+                        <li class="active"><a href="#prod-tab-1" data-toggle="tab">{{ content.field_title_tab_1 }}</a></li>
+                    {% endif %}
+                    {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                        <li class=""><a href="#prod-tab-3" data-toggle="tab">{{ content.field_title_tab_2 }}</a></li>
+                    {% endif %}
+                    {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                        <li class=""><a href="#prod-tab-4" data-toggle="tab">{{ content.field_title_tab_3 }}</a></li>
+                    {% endif %}
+                    {% if content.field_title_tab_4 or content.field_content_tab_4 %}
+                        <li class=""><a href="#prod-tab-5" data-toggle="tab">{{ content.field_title_tab_4 }}</a></li>
+                    {% endif %}
+                    {% if content.field_title_tab_5 or content.field_content_tab_5 %}
+                        <li class=""><a href="#prod-tab-6" data-toggle="tab">{{ content.field_title_tab_5 }}</a></li>
+                    {% endif %}             
+                </ul>
+            </div>
+            <div class="tab-content prod-tab-content space-20">
+                {% if content.field_title_tab_1 or content.field_content_tab_1 %}
+                    <div id="prod-tab-1" class="tab-pane fade in active">
+                        {{ content.field_content_tab_1 }}
+                    </div>
+                {% endif %}
+                {% if content.field_title_tab_2 or content.field_content_tab_2 %}
+                    <div id="prod-tab-3" class="tab-pane fade">
+                        {{ content.field_content_tab_2 }}
+                    </div>
+                {% endif %}
+                {% if content.field_title_tab_3 or content.field_content_tab_3 %}
+                    <div id="prod-tab-4" class="tab-pane fade">
+                        {{ content.field_content_tab_3 }}
+                    </div>
+                {% endif %}
+                {% if content.field_title_tab_4 or content.field_content_tab_4 %}
+                    <div id="prod-tab-5" class="tab-pane fade">
+                        {{ content.field_content_tab_4 }}
+                    </div>
+                {% endif %}
+                {% if content.field_title_tab_5 or content.field_content_tab_5 %}
+                    <div id="prod-tab-6" class="tab-pane fade">
+                        {{ content.field_content_tab_5 }}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+        <!-- Products Description Tabination Ends -->  
+
+        <!-- Related Products Starts-->               
+        <div id="product" class="space-50 text-center">
+            <h2 class="section-title space-bottom-40"> {{ 'related product'|t }} </h2> 
+            <div class="relative-div row">                           
+                <div class="related-prod-slider-2 space-bottom-30">
+                    <!-- Slides -->
+                    {% if product_style == 'fashion' %}
+                        {% for related_product_fashion in related_products_fashion %}
+                            {{ related_product_fashion|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'interior' %}
+                        {% for related_product_interior in related_products_interior %}
+                            {{ related_product_interior|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'cosmetic' %}
+                        {% for related_product_cosmetic in related_products_cosmetic %}
+                            {{ related_product_cosmetic|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'bakery' %}
+                        {% for related_product_bakery in related_products_bakery %}
+                            {{ related_product_bakery|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'bike' %}
+                        {% for related_product_bike in related_products_bike %}
+                            {{ related_product_bike|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'sunglasses' %}
+                        {% for related_product_sunglasses in related_products_sunglasses %}
+                            {{ related_product_sunglasses|t }}
+                        {% endfor %}
+                    {% elseif product_style == 'electronics' %}
+                        {% for related_product_electronics in related_products_electronics %}
+                            {{ related_product_electronics|t }}
+                        {% endfor %}
+                    {% else %}
+                        {% for related_product_barber in related_products_barber %}
+                            {{ related_product_barber|t }}
+                        {% endfor %}
+                    {% endif %} 
+                </div>                              
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="cat-list-view">
+        <div class="row">                                                                         
+            <div class="thumbnail-wrap">
+                <div class="thumbnail">
+                    <div class="col-md-4 col-sm-6">    
+                        <div class="thumbnail-img light-bg">
+                            <div class="flipper">
+                                {% set image_product_url_1 = getUrlByImageStyle(node.uc_product_image.0.entity.uri.value, 'image_270x360') %}
+                                    <div class="front">
+                                    <a href="{{ url }}"> <img class="img-responsive" src="{{ image_product_url_1 }}" alt="{{ node.getTitle() }}"/> </a>
+                                    </div>
+
+                                {% set image_product_url_2 = getUrlByImageStyle(node.uc_product_image.1.entity.uri.value, 'image_270x360') %}    
+                                <div class="back">                                                               
+                                    <a href="{{ url }}"> <img class="img-responsive" src="{{ image_product_url_2 }}" alt="{{ node.getTitle() }}"/> </a>
+                                </div>                                                       
+                            </div>
+                            <ul class="thumbnail-conten list-items black-bg font-2">    
+                                <li class="epros-view-list"> <a href="{{ url }}"> <i class="icon ion-ios-eye-outline size-24"></i> View </a> </li>
+                            </ul>                                                    
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-sm-6">   
+                        <div class="product-content">                                                          
+                            <div class="product-heading">
+                                <a href="{{ url }}" class="title-2">{{ node.getTitle() }}</a>                                              
+                            </div>                                           
+
+                            <div class="product-price font-3">
+                                <p class="caption-text">
+                                    <span class="size-18 black-color">{{ content.price }}</span>
+                                    <del class="gray-color">  </del>
+                                </p>
+                            </div>
+
+
+                            <div class="product-description space-bottom-15 size-13">
+                                {{ node.field_short_description.value|length > 300 ? node.field_short_description.value|slice(0,300) ~ '...' : node.field_short_description.value }}
+                            </div>
+
+                            <div class="prod-btns space-top-20">                                                               
+                                <div class="add-to-cart epros-cart-list">
+                                    {{ content.add_to_cart }}                                       
+                                </div>                                    
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+{% endif %}

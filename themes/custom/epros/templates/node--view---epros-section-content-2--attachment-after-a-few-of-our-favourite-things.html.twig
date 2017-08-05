@@ -1,0 +1,18 @@
+<div class="grid-item">
+    <div class="product-wrap">
+        <div class="product-img img-top">
+            {% set image_product_url_1 = getUrlByImageStyle(node.uc_product_image.0.entity.uri.value, 'image_270x360') %} 
+            <a href="{{ url }}"> <img src="{{ image_product_url_1 }}" alt="{{ node.getTitle() }}"> </a>
+        </div>
+        <div class="product-detail">
+            <div class="caption-title space-15"><a class="title-2" href="{{ url }}">{{ node.getTitle() }}</a></div>
+            <div class="caption-text font-3"> <span class="size-30 black-color"> {{ content.price }} </span> </div>                                                     
+        </div>
+        <div class="product-tag">
+            <ul>
+                <li> <a href="{{ url }}" class="icon ion-android-search"> </a> <div class="tool"> <span class="tool-span"> View </span> </div> </li>
+                <li class="epros-bike-add-to-cart"> <i class="icon ion-bag"></i>{{ content.add_to_cart }}  <div class="tool"> <span class="tool-span">Add to Cart</span> </div> </li>
+            </ul>
+        </div>
+    </div>
+</div>

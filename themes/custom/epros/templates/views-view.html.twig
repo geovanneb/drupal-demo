@@ -1,0 +1,499 @@
+{% if id == '_epros_sidebar_widgets' %}
+	{% if display_id == 'block_sidebar_recent_products' %}
+	    <div class="widget-content epros-recent-products">
+	        {{ rows }}                                            
+	    </div>
+	{% elseif display_id == 'block_sidebar_product_recent_products' %}
+				{{ header}}
+		<div class="recent-nav">                
+		    <span class="prev slider-btn arrow_carrot-left"> </span>
+		    <span class="next slider-btn arrow_carrot-right"> </span>
+		</div>
+		<div class="recent-prod-slider space-bottom-30">
+		    <!-- Slides -->
+		    {% set temp = 1 %}
+		    {% for i, row in rows.0['#rows'] %}
+		    	{% if temp == 1 %}
+			    	<div class="item">
+			        	{{ row }}
+			        {% set temp = temp + 1 %}
+			    {% elseif temp == 2 %}
+			    	{{ row }}
+			    	{% set temp = temp + 1 %}
+			    {% elseif temp == 3 or i == (rows.0['#rows']|length - 1) %}
+			    		{{ row }}
+			    	</div>
+			    	{% set temp = 1 %}
+			    {% endif %}
+		    {% endfor %}
+		</div>
+	{% elseif display_id == 'block_sidebar_product_shop_recent_products' %}
+		<div class="widget-content">
+		    {{ rows }}                                                                   
+		</div>	
+	{% else %}
+		{{ header }}
+	  	{{ rows }}
+	  	{{ attachment_after }}
+	  	{{ empty }}
+	  	{{ footer }}
+	  	{{ pager }}
+	{% endif %}
+{% elseif id == '_epros_section_content' %}
+	{% if display_id == 'block_section_content_our_team' %}
+		<div class="col-sm-4 space-bottom-20">
+            {{ header }}
+        </div>
+        <div class="col-sm-8 about-info space-bottom-30">
+            <div class="row">
+                {{ rows }}
+            </div>
+        </div>
+    {% elseif display_id == 'block_section_popular_our_product' %}
+		<div class="container theme-container">
+		    <div class="res-spc space-80"></div>
+		    <div class="bg-txt prod-sec">
+		        {{ header }}
+		        <span class="space-15 block-inline"></span>                        
+		    </div>
+		    <div class="hidden-xs space-40"></div>
+		</div>
+		<div class="inline-block">                
+		    <div class="our-prod-slider">
+		        <!-- Slides -->
+		        {{ rows }}
+		    </div>                    
+		</div>
+	{% elseif display_id == 'block_section_content_awesome_our_products' %}
+		<div class="container theme-container text-center">
+				{{ header }}
+		    <div class="tab-content space-top-50">
+		        <!-- tab 1 -->
+		        <div class="tab-pane fade active in" id="tab-1">
+		            <div class="swiper-slider-1 relative-div">
+		                <div class="swiper-container">
+		                    <div class="swiper-wrapper">
+		                        <!-- Slides -->
+		                        {{ attachment_before }}
+		                    </div>
+		                </div>                                
+		                <div class="slider-nav swiper-next"> <span> Next </span> </div>
+		                <div class="slider-nav swiper-prev"> <span> Prev </span> </div>
+		            </div>
+		        </div>
+
+		        <!-- tab 2 -->
+		        <div class="tab-pane fade" id="tab-2">
+		            <div class="swiper-slider-2 relative-div">
+		                <div class="swiper-container">
+		                    <div class="swiper-wrapper">
+		                        <!-- Slides -->
+		                        {{ rows }}
+		                    </div>
+		                </div>                                
+		                <div class="slider-nav swiper-next"> <span> Next </span> </div>
+		                <div class="slider-nav swiper-prev"> <span> Prev </span> </div>
+		            </div>                             
+		        </div>
+
+		        <!-- tab 3 -->
+		        <div class="tab-pane fade" id="tab-3">                                
+		            <div class="swiper-slider-3 relative-div">
+		                <div class="swiper-container">
+		                    <div class="swiper-wrapper">
+		                        <!-- Slides -->
+		                        {{ attachment_after }}
+		                    </div>
+		                </div>                                
+		                <div class="slider-nav swiper-next"> <span> Next </span> </div>
+		                <div class="slider-nav swiper-prev"> <span> Prev </span> </div>
+		            </div>
+		        </div>
+		    </div>
+
+		</div>
+	{% elseif display_id == 'block_section_content_awesome_our_products_interior' %}
+		<div class="col-md-12 text-center">
+
+		    	{{ header }}
+			<div class="isotope isotope-items space-top-50" id="product-filter">
+					{{ rows }}
+					{{ attachment_after }}
+					{{ attachment_before }}
+
+		    </div>
+
+
+		</div>
+	{% elseif display_id == 'block_section_content_awesome_our_products_cosmetic' %}
+		<div class="container theme-container text-center">
+				{{ header }}
+		    <div class="row isotope isotope-items space-top-50" id="product-filter">
+		        {{ rows }}
+				{{ attachment_after }}
+				{{ attachment_before }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_awesome_our_products_sunglasses' %}
+	    <div class="container theme-container text-center">
+
+	        {{ header }}
+
+	        <div class="row isotope isotope-items space-top-50" id="product-filter">
+	            {{ rows }}
+				{{ attachment_after }}
+				{{ attachment_before }}
+	        </div>
+	    </div>
+
+	{% elseif display_id == 'block_section_content_news' %}
+		<div class="res-spc space-70"></div>
+		<div class="container theme-container">
+		    <div class="bg-txt blog-sec text-center">
+		        {{ header }}
+		        <span class="space-15 block-inline"></span>                        
+		    </div>
+		    <div class="hidden-xs space-40"></div>
+		    <div class="inline-block"> 
+		        <div class="our-blog-slider">
+		            {{ rows }}
+		        </div>
+		    </div>
+		</div>
+		<div class="res-spc space-80"></div>
+	{% elseif display_id == 'block_section_content_from_our_blog' %}
+		<div class="container theme-container">
+		    <div class="title-wrap space-bottom-30">                       
+		        {{ header }}
+		    </div>
+		    	{{ rows }}
+		</div>
+	{% elseif display_id == 'block_section_content_latest_posts' %}
+		<div class="container theme-container text-center">
+		    <div class="title-wrap space-bottom-50">
+		        {{ header }}
+		    </div>
+		    <div id="accordion">
+		    	{{ rows }}
+
+		    </div>                    
+
+		</div>
+	{% elseif display_id == 'block_section_content_feature_cosmetic' %}
+		<div class="container theme-container">
+		    <div class="row">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_main_services_we_provide_bakery' %}
+		<div class="container theme-container text-center">
+		    {{ header }}
+		    <div class="row">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_blog_bakery' %}
+		<div class="container theme-container">
+		    <div class="row">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_awesome_our_products_bakery' %}
+		<div class="container theme-container text-center">
+		    	{{ header }}
+		    <div class="tab-content space-top-50">
+		        <!-- tab 1 -->
+		        <div class="tab-pane fade active in" id="tab-1">
+		            <div class="swiper-slider-1 relative-div">
+		                <div class="swiper-container">
+		                    <div class="swiper-wrapper">
+		                        <!-- Slides -->
+		                        {{ attachment_before }}
+		                    </div>
+		                </div>                                
+		                <div class="slider-nav swiper-next"> <span>Next</span> </div>
+		                <div class="slider-nav swiper-prev"> <span>Prev</span> </div>
+		            </div>
+		        </div>
+
+		        <!-- tab 2 -->
+		        <div class="tab-pane fade" id="tab-2">
+		            <div class="swiper-slider-2 relative-div">
+		                <div class="swiper-container">
+		                    <div class="swiper-wrapper">
+		                        <!-- Slides -->
+		                        {{ rows }}
+		                    </div>
+		                </div>                                
+		                <div class="slider-nav swiper-next"> <span>Next</span> </div>
+		                <div class="slider-nav swiper-prev"> <span>Prev</span> </div>
+		            </div>                             
+		        </div>
+
+		        <!-- tab 3 -->
+		        <div class="tab-pane fade" id="tab-3">                                
+		            <div class="swiper-slider-3 relative-div">
+		                <div class="swiper-container">
+		                    <div class="swiper-wrapper">
+		                        <!-- Slides -->
+		                        {{ attachment_after }}
+		                    </div>
+		                </div>                                
+		                <div class="slider-nav swiper-next"> <span>Next</span> </div>
+		                <div class="slider-nav swiper-prev"> <span>Prev</span> </div>
+		            </div>
+		        </div>
+		    </div>
+
+		</div>
+	{% else %}
+		{{ header }}
+	  	{{ rows }}
+	  	{{ attachment_after }}
+	  	{{ empty }}
+	  	{{ footer }}
+	  	{{ pager }}
+	{% endif %}
+{% elseif id == '_epros_section_content_2' %}
+	{% if display_id == 'block_section_content_main_services_we_provide_sunglasses' %}
+		<div class="container theme-container text-center">
+		    <div class="title-wrap space-30">                       
+		        {{ header }}
+		    </div>
+		    <div class="row space-50">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_brands_logo' %}	
+		<div class="container theme-container">
+		    <div class="brand-slider">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_brands_logo_electronics' %}
+		<div class="container theme-container">
+		    <div class="title-wrap">
+		        {{ header }}
+		    </div>
+
+		    <div class="brand-slider text-center space-top-70 slide-nav-1">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_feature_products' %}
+		<div class="container theme-container">
+		    <div class="title-wrap">
+		        {{ header }} 
+		    </div>
+
+		    <div class="featured-slider text-center space-top-40 slide-nav-1">
+		    	{% set tempt = 1 %}
+			    {% for i, row in rows.0['#rows'] %}
+			    	{% if tempt == 1 %}
+				    	<div class="item">
+				        	{{ row }}
+				        {% set tempt = tempt + 1 %}
+				    {% elseif tempt == 2 or i == (rows.0['#rows']|length - 1) %}
+				    		{{ row }}
+				    	</div>
+				    	{% set tempt = 1 %}
+				    {% endif %}
+			    {% endfor %}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_best_seller_electronic' %}
+		<div class="container theme-container">
+		    <div class="title-wrap">
+		        {{ header }}  
+		    </div>
+
+		    <div class="best-seller text-center space-top-40 slide-nav-1">
+		    	{{ rows }}
+
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_deal_of_the_day' %}
+		<div class="container theme-container">
+		    <div class="title-wrap">
+		       {{ header }}  
+		    </div>
+
+		    <div class="deal-slider text-center space-top-40 slide-nav-1">
+		        {{ rows }}
+
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_products_barber_1' %}
+
+		{{ rows }}
+	{% elseif display_id == 'block_section_content_products_barber_2' %}
+		<div>
+			{{ rows }}
+		</div>
+	{% elseif display_id == 'block_section_content_products_barber_3' %}
+		{{ rows }}
+	{% elseif display_id == 'block_section_content_main_services_we_provide_bike' %}
+		<div class="container theme-container text-center">
+		    <div class="title-wrap space-30">                       
+		        {{ header }}
+		    </div>
+		    <div class="row space-50">
+		        {{ rows }}
+		    </div>
+		</div>
+	{% elseif display_id == 'block_section_content_a_few_of_our_favourite_things' %}
+		<div class="container theme-container">
+		    <div class="title-wrap space-30">                       
+		        {{ header }}
+		    </div>                    
+		</div>
+		<div class="clearfix tabs space-top-80">
+		    {{ footer }}
+		</div>
+
+		<div class="tab-content clearfix">
+		    <div id="tab-1" class="tab-pane fade active in">
+		        <div class="grid">
+		        	<div class="grid-sizer"></div>
+		            {{ attachment_before }}
+		        </div>
+		    </div>
+		    <div class="clearfix"></div>
+		    <div id="tab-2" class="tab-pane fade">
+		        <div class="grid">
+		            <div class="grid-sizer"></div>
+		            {{ rows }}
+		        </div>
+		    </div>
+		    {{ attachment_after }}
+		</div>
+	{% elseif display_id == 'attachment_after_a_few_of_our_favourite_things' %}	
+		<div id="tab-3" class="tab-pane fade">
+	        <div class="grid">
+	            <div class="grid-sizer"></div>
+	            {{ rows }}
+	        </div>
+	    </div>
+	    <div class="clearfix"></div>
+	    <div id="tab-4" class="tab-pane fade">
+	        <div class="grid">
+	            <div class="grid-sizer"></div>
+	            {{ header }}
+	        </div>
+		 </div>						
+	{% else %}
+		{{ header }}
+	  	{{ rows }}
+	  	{{ attachment_after }}
+	  	{{ empty }}
+	  	{{ footer }}
+	  	{{ pager }}
+	{% endif %}
+{% elseif id == 'blog'%}
+	{% if blog_layout == 'masonry' %}
+		{{ header }}
+		<div class="row">
+	                <!-- Blog Post Starts -->
+		    <aside class="blog-wrap post-masonry">                           
+		        <div class="grid-sizer"></div>
+				{{ rows }}
+
+			</aside>
+		</div>
+	  	{{ attachment_after }}
+	  	{{ empty }}
+	  	{{ footer }}
+	  	<div class="font-2  text-center  space-70">
+	        {{ pager }}
+	    </div>
+	    <div class="visible-lg space-top-50"></div>
+    {% else %}
+    	{{ header }}
+	  	{{ rows }}
+	  	{{ attachment_after }}
+	  	{{ empty }}
+	  	{{ footer }}
+	  	{{ pager }}
+	{% endif %}
+{% elseif id == '_epros_taxonomy_term' %}
+	{% if display_id == 'block_on_sidebar_blog_tags' %}
+		<div class="widget-content tag-cloud">
+			{% set len = rows.0['#rows']|length %}
+			{% set i = 1 %}
+            {% for row in rows.0['#rows'] %}
+            	{% if i != len %}
+            		{{ row }},
+            		{% set i = i + 1 %}
+            	{% else %}
+            		{{ row }}
+            	{% endif %}
+            {% endfor %}
+        </div>
+    {% elseif display_id == 'block_on_sidebar_blog_categories' %}
+    	<div class="widget-content">
+		    <ul class="epros-categories-blogs-sidebar">
+		        {{ rows }}
+		    </ul>
+		</div>
+	{% elseif display_id == 'block_on_sidebar_product_categories' %}
+		<div class="widget-content">
+		    <ul class="epros-categories-product-sidebar">
+		        {{ rows }}
+		    </ul>
+		</div>
+	{% elseif display_id == 'block_footer_8_column_2_popular_tags' %}
+		<div class="tag-cloud">   
+		    {{ rows }} 
+		</div> 	
+	{% else %}
+		{{ header }}
+	  	{{ rows }}
+	  	{{ attachment_after }}
+	  	{{ empty }}
+	  	{{ footer }}
+	  	{{ pager }}
+	{% endif %}
+{% elseif id == '_epros_shop_catalog' %}
+	<div class="row space-bottom-50">
+	    <div class="col-md-6 col-sm-5 col-xs-3 show-result"> 
+		    {% if rows.0['#rows']|length == 1 %}
+		    	<h2 class="section-title size-18">Showing {{ rows.0['#rows']|length }} product</h2>
+		    {% else %}
+		    	<h2 class="section-title size-18">Showing {{ rows.0['#rows']|length }} products</h2>
+	    	{% endif %}
+	     </div>
+	    <div class="col-md-4 col-sm-4 col-xs-5 sorter epros-exposed"> 
+	        {{ exposed }}
+	    </div>
+	</div>
+
+	<div class="tab-content">
+		{% if shop_listing_layout == 'grid' %}
+	    <div id="grid-view" class="tab-pane fade active in" role="tabpanel">
+	        <div class="row text-center">
+	            {{ rows }}
+	        </div>
+	        <div class="pagination-wrapper space-50">
+	            {{ pager }}
+	        </div>
+	    </div>
+	    {% else %}
+	    <div id="list-view" class="tab-pane fade active in" role="tabpanel">
+	        {{ rows }}
+
+	        <div class="pagination-wrapper space-50">
+	            {{ pager }}
+	        </div>
+	    </div>
+	    {% endif %}
+	</div>
+
+	<div class="visible-lg space-top-40"></div>
+{% else %}
+	{{ header }}
+  	{{ rows }}
+  	{{ attachment_after }}
+  	{{ empty }}
+  	{{ footer }}
+  	{{ pager }}
+{% endif %}

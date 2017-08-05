@@ -1,0 +1,373 @@
+{% set blog_format = node.field_blog_format.0.value %}
+{% if blog_format == '' %}
+    {% set blog_format = 'standard' %}
+{% endif %}
+{% if node.getRevisionAuthor().field_description.value %}
+  {% set description = node.getRevisionAuthor().field_description.value %}
+{% endif %}
+{% set user_name = node.getRevisionAuthor().name.value %}
+{% set full_name = node.getRevisionAuthor().field_full_name.value %}
+{% if page %}
+    <article class="post-wrap space-bottom-40">
+        <div class="post-header">
+            <h2 class="post-title size-24">{{ title }}</h2>
+            <ul class="list-items font-2 post-meta">
+                <li> Posted By {% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</li> 
+                <li>{{ node.created.value|date('F d, Y') }}</li> 
+                <li>{{ content.field_category }}</li>
+            </ul>
+        </div>
+        <div class="post-media space-bottom-40">
+            {% if blog_format == 'standard' %}
+                {{ content.field_blog_image }}
+            {% elseif blog_format == 'gallery' %}
+                <div class="owl-carousel blog-slider">
+                    {% for img_url in multi_url_image %}
+                    <div class="item">
+                        <img src="{{ img_url }}" alt="{{ title }}">
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elseif blog_format == 'sound_cloud' %}
+                <div class="relative-div">
+                    {{ content.field_sound_cloud }}
+                </div>
+            {% else %}
+                <div class="post-video relative-div">
+                    {{ content.field_video_embed }}
+                </div>
+            {% endif %}                              
+        </div>
+
+        <div class="post-body">
+            {{ content.body }}
+        </div>
+
+        <div class="post-footer">
+            <hr class="fullwidth-divider">
+            <div class="tag-cloud">
+                <span class="title-2">Tags:</span>
+                {{ content.field_blog_tags }}                                    
+            </div>
+            <div class="social-media">
+                <span class="title-2">{{ 'share this article:'|t }}</span>
+                <ul class="list-items">
+                    <li><a onClick="window.open('http://www.facebook.com/sharer.php?u={{ pageURL }}','Facebook','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://www.facebook.com/sharer.php?u={{ pageURL }}" target="_blank" class="facebook"><i class="fa fa-facebook"></i></a></li>
+                    <li><a onClick="window.open('http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}','Twitter share','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://twitter.com/share?url={{ pageURL }}&amp;text={{ title }}" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a></li>
+                    <li><a onClick="window.open('https://plus.google.com/share?url={{ pageURL }}','Google plus','width=585,height=666,left='+(screen.availWidth/2-292)+',top='+(screen.availHeight/2-333)+''); return false;" href="https://plus.google.com/share?url={{ pageURL }}" target="_blank" class="google-plus"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());" target="_blank" class="pinterest"><i class="fa fa-pinterest"></i></a></li>
+                    <li><a onClick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}','Linkedin','width=863,height=500,left='+(screen.availWidth/2-431)+',top='+(screen.availHeight/2-250)+''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ pageURL }}" target="_blank" class="linkedin"><i class="fa fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+            <hr class="fullwidth-divider">
+        </div>
+
+        <div class="post-author row space-20">
+            <div class="col-md-3 col-sm-4 col-xs-3">
+                {{ author_picture }}
+            </div>
+            <div class="col-md-9 col-sm-8 col-xs-9">
+                <div class="author-info">
+                    <h2 class="title-2">{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</h2>
+                    {% if description %}
+                        <p>{{ description|t }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr class="fullwidth-divider">
+
+        {% if is_exist_rp %}
+          {{ related_posts|t }}
+        {% endif %}
+        {{ content.field_blog_comments }}
+    </article>                          
+{% elseif vcname == 'blog_categories' %}
+    {% if term_layout == 'standard' %}
+        {% if blog_format == 'standard' %}
+            <article class="post-wrap space-bottom-40">
+                <div class="post-media space-bottom-40">
+                    {{ content.field_blog_image }}
+                </div>
+                <div class="post-header">
+                    <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                    <ul class="list-items font-2 post-meta ">
+                        <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                        <li>{{ node.created.value|date('F d, Y') }}</li> 
+                        <li>{{ content.field_category }}</li>
+                    </ul>
+                </div>
+                <div class="post-body">
+                    <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+                </div>
+                <div class="post-footer space-30">
+                    <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+                </div>
+            </article>
+        {% elseif blog_format == 'gallery' %}
+            <article class="post-wrap space-bottom-40">
+                <div class="post-media space-bottom-40">
+                    <div class="owl-carousel blog-slider">
+                        {{ content.field_blog_image }}
+                    </div>                                    
+                </div>
+                <div class="post-header">
+                    <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                    <ul class="list-items font-2 post-meta">
+                        <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                        <li>{{ node.created.value|date('F d, Y') }}</li> 
+                        <li>{{ content.field_category }}</li>
+                    </ul>
+                </div>
+                <div class="post-body">
+                    <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+
+                </div>
+                <div class="post-footer space-30">
+                    <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+                </div>
+            </article>
+        {% elseif blog_format == 'sound_cloud' %}
+            <article class="post-wrap space-bottom-40">
+                <div class="post-media space-bottom-40">
+                    <div class="relative-div">
+                        {{ content.field_blog_image }}
+                        <!-- / AUDIO Player Ends -->
+                    </div>
+                </div>
+                <div class="post-header">
+                    <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                    <ul class="list-items font-2 post-meta">
+                        <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                        <li>{{ node.created.value|date('F d, Y') }}</li> 
+                        <li>{{ content.field_category }}</li>
+                    </ul>
+                </div>
+                <div class="post-body">
+                    <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+
+                </div>
+                <div class="post-footer space-30">
+                    <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+                </div>
+            </article>
+        {% else %}
+            <article class="post-wrap space-bottom-40">
+                <div class="post-media space-bottom-40">
+                    <div class="post-video relative-div">
+                        {{ content.field_video_embed }}
+                    </div>
+                </div>
+                <div class="post-header">
+                    <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                    <ul class="list-items font-2 post-meta">
+                        <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                        <li>{{ node.created.value|date('F d, Y') }}</li> 
+                        <li>{{ content.field_category }}</li>
+                    </ul>
+                </div>
+                <div class="post-body">
+                    <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+
+                </div>
+                <div class="post-footer space-30">
+                    <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+                </div>
+            </article>
+        {% endif %}
+    {% else %}
+        {% if blog_format == 'standard' %}
+            <article class="col-md-6 clear-box">
+                <div class="post-wrap space-bottom-30">
+                    <div class="post-media space-bottom-30">
+                        {{ content.field_blog_image }}
+                    </div>
+                    <div class="post-header">
+                        <a href="{{ url }}" class="post-title size-18">{{ node.getTitle() }}</a>
+                        <ul class="list-items font-2 post-meta">
+                            <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                            <li>{{ node.created.value|date('F d, Y') }}</li> 
+                            <li>{{ content.field_category }}</li>
+                        </ul>
+                    </div>
+                    <div class="post-body">
+                        <p>{{ node.body.summary|length > 141 ? node.body.summary|slice(0,141) ~ '...' : node.body.summary }}</p>
+
+                    </div>
+                    <div class="post-footer space-20">
+                        <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a>
+                    </div>
+                </div>
+            </article>
+        {% elseif blog_format == 'gallery' %}
+            <article class="col-md-6 clear-box">
+                <div class="post-wrap space-bottom-30">
+                    <div class="post-media space-bottom-30">
+                        <div class="owl-carousel blog-slider">
+                            {{ content.field_blog_image }}
+                        </div>                                    
+                    </div>
+                    <div class="post-header">
+                        <a href="{{ url }}" class="post-title size-18">{{ node.getTitle() }}</a>
+                        <ul class="list-items font-2 post-meta">
+                            <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                            <li>{{ node.created.value|date('F d, Y') }}</li> 
+                            <li>{{ content.field_category }}</li>
+                        </ul>
+                    </div>
+                    <div class="post-body">
+                        <p>{{ node.body.summary|length > 141 ? node.body.summary|slice(0,141) ~ '...' : node.body.summary }}</p>
+
+                    </div>
+                    <div class="post-footer space-20">
+                        <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a>
+                    </div>
+                </div>
+            </article>
+        {% elseif blog_format == 'sound_cloud' %}
+            <article class="col-md-6 clear-box">
+                <div class="post-wrap space-bottom-30">
+                    <div class="post-media space-bottom-30">
+                        <div class="relative-div">
+                            {{ content.field_blog_image }}
+                        </div>
+                    </div>
+                    <div class="post-header">
+                        <a href="{{ url }}" class="post-title size-18">{{ node.getTitle() }}</a>
+                        <ul class="list-items font-2 post-meta">
+                            <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                            <li>{{ node.created.value|date('F d, Y') }}</li> 
+                            <li>{{ content.field_category }}</li>
+                        </ul>
+                    </div>
+                    <div class="post-body">
+                        <p>{{ node.body.summary|length > 141 ? node.body.summary|slice(0,141) ~ '...' : node.body.summary }}</p>
+
+                    </div>
+                    <div class="post-footer space-20">
+                        <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <article class="col-md-6 clear-box">
+                <div class="post-wrap space-bottom-30">
+                    <div class="post-media space-bottom-30">
+                        <div class="post-video relative-div">
+                            <!--<a href="#"> <img src="assets/img/main/blog/post-3.jpg" alt=""> </a>-->
+                            {{ content.field_video_embed }}
+                        </div>
+                    </div>
+                    <div class="post-header">
+                        <a href="{{ url }}" class="post-title size-18">{{ node.getTitle() }}</a>
+                        <ul class="list-items font-2 post-meta">
+                            <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                            <li>{{ node.created.value|date('F d, Y') }}</li> 
+                            <li>{{ content.field_category }}</li>
+                        </ul>
+                    </div>
+                    <div class="post-body">
+                        <p>{{ node.body.summary|length > 141 ? node.body.summary|slice(0,141) ~ '...' : node.body.summary }}</p>
+
+                    </div>
+                    <div class="post-footer space-20">
+                        <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a>
+                    </div>
+                </div>
+            </article>
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% if blog_format == 'standard' %}
+        <article class="post-wrap space-bottom-40">
+            <div class="post-media space-bottom-40">
+                {{ content.field_blog_image }}
+            </div>
+            <div class="post-header">
+                <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                <ul class="list-items font-2 post-meta ">
+                    <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                    <li>{{ node.created.value|date('F d, Y') }}</li> 
+                    <li>{{ content.field_category }}</li>
+                </ul>
+            </div>
+            <div class="post-body">
+                <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+            </div>
+            <div class="post-footer space-30">
+                <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+            </div>
+        </article>
+    {% elseif blog_format == 'gallery' %}
+        <article class="post-wrap space-bottom-40">
+            <div class="post-media space-bottom-40">
+                <div class="owl-carousel blog-slider">
+                    {{ content.field_blog_image }}
+                </div>                                    
+            </div>
+            <div class="post-header">
+                <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                <ul class="list-items font-2 post-meta">
+                    <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                    <li>{{ node.created.value|date('F d, Y') }}</li> 
+                    <li>{{ content.field_category }}</li>
+                </ul>
+            </div>
+            <div class="post-body">
+                <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+
+            </div>
+            <div class="post-footer space-30">
+                <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+            </div>
+        </article>
+    {% elseif blog_format == 'sound_cloud' %}
+        <article class="post-wrap space-bottom-40">
+            <div class="post-media space-bottom-40">
+                <div class="relative-div">
+                    {{ content.field_blog_image }}
+                    <!-- / AUDIO Player Ends -->
+                </div>
+            </div>
+            <div class="post-header">
+                <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                <ul class="list-items font-2 post-meta">
+                    <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                    <li>{{ node.created.value|date('F d, Y') }}</li> 
+                    <li>{{ content.field_category }}</li>
+                </ul>
+            </div>
+            <div class="post-body">
+                <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+
+            </div>
+            <div class="post-footer space-30">
+                <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+            </div>
+        </article>
+    {% else %}
+        <article class="post-wrap space-bottom-40">
+            <div class="post-media space-bottom-40">
+                <div class="post-video relative-div">
+                    {{ content.field_video_embed }}
+                </div>
+            </div>
+            <div class="post-header">
+                <a href="{{ url }}" class="post-title size-24">{{ node.getTitle() }}</a>
+                <ul class="list-items font-2 post-meta">
+                    <li>{% if full_name %}{{ full_name }}{% else %}{{ user_name }}{% endif %}</a> </li> 
+                    <li>{{ node.created.value|date('F d, Y') }}</li> 
+                    <li>{{ content.field_category }}</li>
+                </ul>
+            </div>
+            <div class="post-body">
+                <p>{{ node.body.summary|length > 281 ? node.body.summary|slice(0,281) ~ '...' : node.body.summary }}</p>
+
+            </div>
+            <div class="post-footer space-30">
+                <h2 class="no-margin">  <a class="title-2 link black-arrow" href="{{ url }}"> continue <i class="size-24 icon ion-android-arrow-dropright"></i> </a> </h2>
+            </div>
+        </article>
+    {% endif %}
+{% endif %}

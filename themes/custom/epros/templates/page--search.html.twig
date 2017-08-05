@@ -1,0 +1,80 @@
+{% if setting_header == 'style2' %}
+    {% set header_classes = 'header-style-2' %}
+{% elseif setting_header == 'style3' %}
+    {% set header_classes = 'header-style-3' %}
+{% elseif setting_header == 'style4' %}
+    {% set header_classes = 'header-style-4' %}
+{% elseif setting_header == 'style5' %}
+    {% set header_classes = 'header-style-5' %}
+{% elseif setting_header == 'style6' %}
+    {% set header_classes = 'header-style-6' %}
+{% elseif setting_header == 'style7' %}
+    {% set header_classes = 'header-style-7' %}
+{% elseif setting_header == 'style8' %}
+    {% set header_classes = 'header-style-8' %}
+{% else %}
+    {% set header_classes = '' %}
+{% endif %}
+<main class="wrapper epros-front-header epros-menu-accout {{ header_classes }}"> 
+    <!-- Header -->
+    {% include theme_path ~ "/templates/header/header-1.html.twig" %}
+    <!-- /Header -->
+
+    <!-- CONTENT AREA -->
+
+    <!--Breadcrumb Section Start-->
+    <section class="breadcrumb-bg login-breadcrumb" style="background-image: url({{ other_page_header_bg }});">                
+        <div class="theme-container container ">
+            <div class="space-top-30"></div>
+            <div class="site-breadcumb col-md-4 space-80">                        
+                <h1 class="section-title size-48 no-margin space-bottom-20">{{ title }}</h1> 
+                <ol class="breadcrumb breadcrumb-menubar">
+                    {{ page.breadcrumbs }}                             
+                </ol>
+            </div>  
+        </div>
+    </section>
+    <!--Breadcrumb Section End-->
+
+    <section class="login-reg-wrap space-100">
+        <div class="theme-container container">
+            <!-- Login Starts -->
+            <div class="row page-user-content epros-search-page"> 
+                    {{ page.content_full_bar }}          
+                    {{ page.content }}
+                <div class="space-15 visible-xs"></div>
+            </div>
+            <!-- / Login Ends -->
+
+        </div>
+        <div class="space-40 visible-lg"></div>
+    </section>
+    <!-- / CONTENT AREA -->
+
+    <!-- FOOTER -->
+        {% if setting_footer == 'style2' %}
+            {% include theme_path ~ "/templates/footer/footer-2.html.twig" %}
+        {% elseif setting_footer == 'style3' %}
+            {% include theme_path ~ "/templates/footer/footer-3.html.twig" %}
+        {% elseif setting_footer == 'style4' %}
+            {% include theme_path ~ "/templates/footer/footer-4.html.twig" %}
+        {% elseif setting_footer == 'style5' %}
+            {% include theme_path ~ "/templates/footer/footer-5.html.twig" %}
+        {% elseif setting_footer == 'style6' %}
+            {% include theme_path ~ "/templates/footer/footer-6.html.twig" %}
+        {% elseif setting_footer == 'style7' %}
+            {% include theme_path ~ "/templates/footer/footer-7.html.twig" %}
+        {% elseif setting_footer == 'style8' %}
+            {% include theme_path ~ "/templates/footer/footer-8.html.twig" %}
+        {% elseif setting_footer == 'style9' %}
+            {% include theme_path ~ "/templates/footer/footer-9.html.twig" %}
+        {% elseif setting_footer == 'style10' %}
+            {% include theme_path ~ "/templates/footer/footer-10.html.twig" %}
+        {% else %}
+            {% include theme_path ~ "/templates/footer/footer-1.html.twig" %}
+        {% endif %}
+    <!-- /FOOTER -->
+
+    <div id="to-top" class="to-top"> <i class="arrow_carrot-up"></i> </div>
+
+</main>

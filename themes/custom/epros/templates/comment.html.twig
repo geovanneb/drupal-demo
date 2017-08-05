@@ -1,0 +1,10 @@
+<div>
+    <div class="media comment-box space-top-30">
+        <span class="pull-left comment-avatar comment-image">{{ user_picture }}</span>
+        <div class="media-body">
+            <h5 class="capital-text">{{ author }}</h5>
+            <p class="size-13">{{ content.comment_body }}</p>
+            {{ 'Posted on ' ~ new_indicator_timestamp|date('d F') ~ ' at ' ~ new_indicator_timestamp|date('h:i') }} 
+        </div>
+    </div>
+</div>
