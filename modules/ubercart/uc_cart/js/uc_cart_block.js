@@ -17,9 +17,13 @@
    */
   Drupal.behaviors.uc_cart_block = {
     attach: function (context) {
+      try {
       $(context).find('.cart-block-arrow').once('uc_cart_block').click(function () {
-        $(context).find('.cart-block-arrow, .cart-block-items').toggleClass('collapsed');
+      
+	  $(context).find('.cart-block-arrow, .cart-block-items').toggleClass('collapsed');
+        
       });
+      } catch(err) {};
     }
   };
 

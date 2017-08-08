@@ -24,7 +24,11 @@
     <!-- CONTENT AREA -->
 
     <!--Breadcrumb Section Start-->
-    <section class="breadcrumb-bg about-breadcrumb" style="background-image: url({{ bg_img_url }});">                
+    {% if bg_img_url is null or bg_img_url is empty or bg_img_url == "/" %}
+       <section class="breadcrumb-bg about-breadcrumb" style="background-image: url(/sites/default/files/blog_listing/blog-breadcrumb-bg.png);">
+    {% else %} 
+       <section class="breadcrumb-bg about-breadcrumb" style="background-image: url({{ bg_img_url }});"> 
+    {% endif %}               
         <div class="theme-container container ">
             <div class="space-top-30"></div>
             <div class="site-breadcumb col-md-4 space-80">                        

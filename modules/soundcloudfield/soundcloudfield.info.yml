@@ -7,8 +7,8 @@ package: SoundCloud
 dependencies:
  - field
 
-# Information added by Drupal.org packaging script on 2015-12-13
-version: '8.x-1.0-alpha1'
+# Information added by Drupal.org packaging script on 2017-04-23
+version: '8.x-1.0-alpha1+5-dev'
 core: '8.x'
 project: 'soundcloudfield'
-datestamp: 1450046499
+datestamp: 1492988050
